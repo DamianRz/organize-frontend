@@ -1,0 +1,22 @@
+#app {
+    .toolbar-app-fixed {
+        position: fixed;
+        z-index: 2;
+    }
+    
+    .left_menu-app-fixed {
+        position: fixed;
+        // margin-top:65px;
+    }
+    
+    .container {
+        padding: 0 !important;
+    }
+
+    .goToUp {
+        position: fixed;
+        z-index: 2;
+        right: 10px;
+        bottom: 50px;
+    }
+}

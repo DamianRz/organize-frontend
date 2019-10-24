@@ -1,0 +1,3 @@
+#Excluimos los paquetes pesados
+**node_modules
+**dist

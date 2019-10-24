@@ -1,0 +1,15 @@
+#drawer-left {
+  width: 100% !important;
+  text-align: center;
+  padding-top: 50%;
+
+  .settings {
+    position: absolute !important;
+    bottom: 5px !important;
+    right: 5px !important;
+  }
+
+  .list-item {
+    margin: auto;
+  }
+}

@@ -1,0 +1,35 @@
+.xs-format {
+  width: 100% !important;
+  margin-left: 0 !important;
+}
+
+.sm-format,
+.md-format,
+.lg-format,
+.xl-format {
+  width: 60%;
+  margin-left: 20%;
+}
+
+#homePage {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-color: rgb(255, 255, 255);
+
+  .events-list {
+    position: relative;
+    top: 100px;
+    width: 100%;
+    height: 300px;
+    background-color: rgb(116, 116, 116);
+
+    .event {
+      position: relative;
+      width: 80%;
+      height: 50px;
+      margin-top: 20px;
+      background-color: rgb(211, 211, 211);
+    }
+  }
+}

@@ -1,0 +1,166 @@
+.v-dialog {
+  border-radius: 4px !important;
+}
+
+.add-dialog {
+  width: 100%;
+  background-color: #ffffff !important;
+
+  .v-stepper {
+    border-radius: 0px !important;
+    .v-stepper__content {
+      padding: 0px;
+    }
+  }
+
+  //STEP 0: CUSTOM CONTENT
+  .content {
+    position: relative;
+    width: 100%;
+    height: 420px;
+
+    .step-title {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .employees-list {
+      position: relative;
+      width: 100%;
+      height: 42%;
+      top: 20px;
+      padding: 10px;
+      text-align: center;
+      overflow-y: auto;
+      background-color: #dbdbdbbb;
+
+      .employee-item {
+        position: relative;
+        margin: 5px;
+        width: 120px;
+        height: 80px;
+        display: inline-table;
+        text-align: center;
+
+        .employee-img {
+          border-radius: 50%;
+          width: 60px;
+          height: 60px;
+          margin: auto;
+          border-width: 4px;
+          border-style: solid;
+          background-color: white;
+          border-color: white;
+        }
+
+        .employee-name {
+          // margin-top: 10px;
+          font-size: 14px;
+        }
+
+        .employee-info {
+          color: #504e4ebb;
+          font-size: 14px;
+        }
+
+        .employee-url {
+          position: absolute;
+          bottom: 0px;
+          margin-left: 40%;
+        }
+      }
+
+      .employee-item:hover {
+        .employee-img {
+          border-color: rgba(22, 255, 22, 0.534);
+        }
+        
+      }
+    }
+
+    .selected-barber {
+      position: relative;
+      width: 100%;
+      // height: max-content;
+      // padding: 30px;
+      text-align: center;
+
+      .select-barber-name {
+        // position: relative;
+        font-size: 13px;
+        margin-top: 30px;
+      }
+
+      .employee-item {
+        position: relative;
+        margin: 5px;
+        width: 100%;
+        height: 140px;
+        // display: inline-table;
+        text-align: center;
+        
+        .employee-img {
+          border-radius: 50%;
+          width: 60px;
+          height: 60px;
+          margin: auto;
+          border-width: 4px;
+          border-style: solid;
+          background-color: white;
+          border-color: white;
+        }
+
+        .employee-name {
+          // margin-top: 10px;
+          font-size: 14px;
+        }
+
+        .employee-info {
+          color: #504e4ebb;
+          font-size: 14px;
+        }
+
+        .employee-url {
+          position: absolute;
+          bottom: 0px;
+          margin-left: 40%;
+        }
+      }
+
+      
+    }
+  }
+
+  //AUTOMATIC CONTENT
+  .automatic-box {
+    position: relative;
+    // background-color: red;
+    width: 200px;
+    margin:auto;
+    .layout-box {
+      .hours-item {
+        .hours-name {
+          text-align: center;
+          margin-top: 20px;
+          font-size: 14px;
+        }
+      }
+    }
+  }
+
+  //FOOTER
+  .footer-dialog {
+    position: relative;
+    width: 100%;
+    height: 60px;
+    // bottom: 0px;
+    padding-right: 20px;
+    margin-top: 50px;
+
+    .footer-button {
+      float: right;
+      border-style: solid;
+      margin-left: 20px;
+    }
+  }
+}
