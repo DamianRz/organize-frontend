@@ -3,37 +3,33 @@ import Vuex from "vuex";
 import main from "./main";
 import VuexPersistence from "vuex-persist";
 
-Vue.use(Vuex);
 const vuexLocal = new VuexPersistence({
   storage: window.localStorage
 });
 
-export default new Vuex.Store({
+Vue.use(Vuex);
+
+export const store = new Vuex.Store({
   state: {
-    drawer: {
-      left: false
+    drawerLeft: false,
+    userInfo: {
+      id: undefined,
+      token: undefined,
+      username: undefined,
     },
-    settings: {},
-    userInfo: {},
-    theme: {
-      dark: false,
-      colors: {
-        nav: "#fff",
-        navIcons: "#676767",
-        menu: "#fff",
-        menuIcons: "#ffffff"
-      }
-    },
-    lang: "en"
   },
   mutations: {
-    setLeftDrawer(state, drawer) {
-      state["drawer"].left = drawer;
-    }
+    drawerLeft(state, value) {
+      state.drawerLeft = value;
+    },
+    userInfo(state, value) {
+      state.userInfo = value
+    },
   },
-
-  actions: {
+  getters: {
+    userInfo: state => state.userInfo,
+    userLogged: state => state.userInfo.id ? undefined : false,
+    drawerLeft: state => state.drawerLeft,
   },
-
   plugins: [vuexLocal.plugin]
 });
