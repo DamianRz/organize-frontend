@@ -1,37 +1,72 @@
 import { Vue } from 'vue-property-decorator';
-import IntegrationBackend from './IntegrationBackend';
+import IntegrationBackend from '../../libs/IntegrationBackend';
+import Event from '../../models/Event';
+import EventList from '../../models/EventList';
+import QuestionnaireList from '../../models/QuestionnaireList';
+import Questionnaire from '@/models/Question';
 
 export default class HomeCode extends Vue {
-  private integrationBackend = new IntegrationBackend();
-  private headers: any[] = [
-    {
-      text: "Nombre",
-      align: "left",
-      sortable: false,
-      value: "name",
-    },
-    { text: "Fecha de comienzo", value: "calories" },
-    { text: "Fat (g)", value: "fat" },
-    { text: "Carbs (g)", value: "carbs" },
-    { text: "Protein (g)", value: "protein" },
-    { text: "Iron (%)", value: "iron" }
-  ];
+  private backend = new IntegrationBackend();
+  private wizard = 1;
 
-  private event: string = "sfdsafdsfdsfds";
-
-  private events: any[] = [
-    {
-      name: "Frozen Yogurt",
-      calories: 159,
-      fat: 6.0,
-      carbs: 24,
-      protein: 4.0,
-      iron: "1%",
-    }
-  ];
-
-  private async getEvents() { 
-    let response = await IntegrationBackend.get(1);
-    console.log(response)
+  private dialogs: any = {
+    events: false
   }
+
+  // Events vars
+  private headers: any[] = [
+    { text: "Nombre", value: "_name", },
+    { text: "Lugar", value: "_location" },
+    { text: "Inicio", value: "_start" },
+    { text: "Invitados", value: "_guestsNumber" },
+    { text: "Descripcion", value: "_description" },
+    { text: "Estado", value: "_state" }
+  ];
+  private eventList: EventList = new EventList();
+  private selectedEvent = [];
+
+
+  // Questionnaires vars
+  private headersQ: any[] = [
+    { text: "Nombre", value: "_name", },
+    { text: "Categoria", value: "_category" },
+  ];
+  private qList: QuestionnaireList = new QuestionnaireList();
+  private selectedQ = [];
+
+
+  // Methods
+
+  init() {
+    this.getEvents();
+  }
+
+  private async getEvents() {
+    let userInfo = this.$store.getters.userInfo;
+    let data = {
+      token: userInfo.token,
+      joinEvent: {
+        idUser: userInfo.id,
+        idType: 1,
+      }
+    }
+    const getEvents: any = await this.backend.send('get:joinEvents', data);
+    Object.assign(this.eventList, getEvents.value)
+  }
+
+  private async showEventDialog() {
+    let data = {
+      questionnaire: {
+        idEvent: 1
+      }
+    }
+    this.dialogs.events = true;
+    const getQ: any = await this.backend.send('get:questionnaireByEventId', data);
+    Object.assign(this.qList, getQ.value)
+  }
+
+  private selectEvent(item: any) {
+    console.log('selected')
+  }
+
 }
