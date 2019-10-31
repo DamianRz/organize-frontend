@@ -35,20 +35,20 @@
     </v-btn>
 
     <!-- dialogs -->
-    <reservation-dialog v-model="reservationDialog"></reservation-dialog>
+    <!-- <reservation-dialog v-model="reservationDialog"></reservation-dialog> -->
   </v-navigation-drawer>
 </template>
 
 <script lang="ts">
-import Vuetify from "vuetify/lib";
+// import Vuetify from "vuetify/lib";
 import { Watch, Component } from "vue-property-decorator";
 import LeftMenuCode from "./leftMenuCode";
 import "./leftMenuStyle.scss";
-import ReservationDialog from "../dialogs/ReservationDialog/ReservationDialog.vue";
+// import ReservationDialog from "../dialogs/ReservationDialog/ReservationDialog.vue";
 
 @Component({
   components: {
-    ReservationDialog
+    // ReservationDialog
   }
 })
 export default class LeftMenu extends LeftMenuCode {}

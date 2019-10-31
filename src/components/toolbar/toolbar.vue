@@ -1,5 +1,5 @@
 <template v-cloak>
-  <v-toolbar id="toolbar" fixed light height="65px" v-if="!$store.state.drawer.left">
+  <v-toolbar id="toolbar" fixed light height="65px" v-if="!$store.state.drawer.left && !$store.getters.userLogged">
     <!-- LEFT MENU - BUTTON  -->
     <v-btn
       class="left-menu-btn d-flex d-sm-none"
@@ -26,7 +26,7 @@
         v-for="(item, index) in filteredConf"
         :key="index"
         :href="item.href"
-        v-if="item.toolbar"
+        :v-if="item.toolbar"
         @click="pageRouter(item.route)"
       >
         <v-icon>{{ item.icon }}</v-icon>
@@ -44,24 +44,24 @@
     </div>
 
     <!-- dialogs -->
-    <reservation-dialog v-model="reservationDialog">
-    </reservation-dialog>
+    <!-- <reservation-dialog v-model="reservationDialog"> -->
+    <!-- </reservation-dialog> -->
 
   </v-toolbar>
 </template>
 
 <script lang="ts">
-import Vuetify from "vuetify/lib";
+// import Vuetify from "vuetify/lib";
 import ToolbarCode from "./toolbarCode";
 import "./toolbarStyle.scss";
 import { Watch, Component } from "vue-property-decorator";
-import AddDialog from "../../components/dialogs/addDialog/addDialog.vue";
-import ReservationDialog from "../dialogs/ReservationDialog/ReservationDialog.vue";
+// import AddDialog from "../../components/dialogs/addDialog/addDialog.vue";
+// import ReservationDialog from "../dialogs/ReservationDialog/ReservationDialog.vue";
 
 @Component({
   components: {
-    AddDialog,
-    ReservationDialog
+    // AddDialog,
+    // ReservationDialog
   }
 })
 export default class Toolbar extends ToolbarCode {}

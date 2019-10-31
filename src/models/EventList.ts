@@ -22,4 +22,8 @@ export default class EventList {
   length() { 
     return this._events.length;
   }
+
+  getArray() {
+    return this._events;
+  }
 }

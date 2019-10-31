@@ -8,6 +8,11 @@ export default new Router({
     {
       path: '/',
       name: 'Home',
+      component: () => import('./views/home/home.vue')
+    },
+    {
+      path: '/Events',
+      name: 'Events',
       component: () => import('./views/events/Events.vue')
     },
   ],
