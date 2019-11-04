@@ -7,19 +7,23 @@ export default class OptionList {
     this._options = [];
   }
 
-  get(index: number) { 
+  get(index: number) {
     return this._options[index];
   }
 
-  set(index: number, option: Option) { 
+  set(index: number, option: Option) {
     this._options[index] = option;
   }
 
-  add(option: Option) { 
+  add(option: Option) {
     this._options.push(option);
   }
 
-  length() { 
+  length() {
     return this._options.length;
+  }
+
+  getArray() {
+    return this._options;
   }
 }

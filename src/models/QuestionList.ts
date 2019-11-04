@@ -22,4 +22,8 @@ export default class QuestionnaireList {
   public length() {
     return this._questions.length;
   }
+
+  getArray() {
+    return this._questions;
+  }
 }
