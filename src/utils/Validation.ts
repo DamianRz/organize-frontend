@@ -28,4 +28,11 @@ export default class Validation {
     });
     return errorString;
   }
+
+  clearObject(object: any) {
+    Object.keys(object).forEach((key: any) => {
+      object[key].value = '';
+    })
+    return object;
+  }
 }

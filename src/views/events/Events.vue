@@ -64,20 +64,20 @@
                 <h2 class="font-title">Nuevo Cuestionario</h2>
                 <div class="info-box">
                   <v-text-field
-                    v-model="newQ.name.value"
+                    v-model="newQuestionnaire.name.value"
                     :error="v.get('name') != ''"
                     :error-messages="v.get('name')"
                     label="Nombre"
                   ></v-text-field>
                   <v-text-field
-                    v-model="newQ.category.value"
+                    v-model="newQuestionnaire.category.value"
                     :error="v.get('category') != ''"
                     :error-messages="v.get('category')"
                     label="Categoria"
                   ></v-text-field>
                 </div>
                 <div class="q-box">
-                  <v-btn @click="wizard = 4" color="green" absolute right dark small fab>+</v-btn>
+                  <v-btn @click="includeQuestion()" color="green" absolute right dark small fab>+</v-btn>
                   <p>Preguntas asignadas</p>
 
                   <v-data-table
@@ -86,7 +86,7 @@
                     :items="newQuestions.getArray()"
                     :items-per-page="5"
                     single-select
-                    item-key="_id"
+                    item-key="name"
                     show-select
                     class="elevation-1"
                   ></v-data-table>
@@ -122,7 +122,7 @@
                   ></v-text-field>
                 </div>
                 <div class="q-box">
-                  <v-btn @click="wizard = 5" color="green" absolute right dark small fab>+</v-btn>
+                  <v-btn @click="includeOption()" color="green" absolute right dark small fab>+</v-btn>
                   <p>Opciones asignadas</p>
 
                   <v-data-table
@@ -131,7 +131,7 @@
                     :items="newOptions.getArray()"
                     :items-per-page="5"
                     single-select
-                    item-key="_id"
+                    item-key="_name"
                     show-select
                     class="elevation-1"
                   ></v-data-table>
