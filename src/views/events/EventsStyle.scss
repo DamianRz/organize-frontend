@@ -28,7 +28,19 @@
     height: 200px;
   }
 
- 
+  //FOOTER
+  .footer-dialog {
+    position: relative;
+    width: 100%;
+    height: 60px;
+    // bottom: 0px;
+    padding-right: 20px;
+    margin-top: 50px;
 
-
+    .footer-button {
+      float: right;
+      border-style: solid;
+      margin-left: 20px;
+    }
+  }
 }
