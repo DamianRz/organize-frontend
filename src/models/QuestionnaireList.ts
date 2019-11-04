@@ -26,4 +26,8 @@ export default class QuestionnaireList {
   getArray() {
     return this._questionnaires;
   }
+
+  getLast() {
+    return this.get(this.length()-1);
+  }
 }

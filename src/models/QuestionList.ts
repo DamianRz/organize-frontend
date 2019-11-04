@@ -1,5 +1,5 @@
 import Question from './Question';
-export default class QuestionnaireList {
+export default class QuestionList {
 
   private _questions: Question[];
 
@@ -25,5 +25,10 @@ export default class QuestionnaireList {
 
   getArray() {
     return this._questions;
+  }
+
+  getLast() {
+    // return this.get(this.length()-1);
+    return this._questions[this._questions.length-1];
   }
 }

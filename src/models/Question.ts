@@ -1,3 +1,5 @@
+import OptionList from './OptionList';
+
 export default class Questionnaire {
 
   private _id: number;
@@ -5,11 +7,15 @@ export default class Questionnaire {
   private _name: string;
   private _category: string;
 
+  private _options: OptionList;
+
   constructor() {
     this._id = -1;
     this._idType = -1;
     this._name = '';
     this._category = '';
+
+    this._options = new OptionList;
   }
 
   get id(): number {
@@ -39,5 +45,11 @@ export default class Questionnaire {
   set category(category: string) {
     this._category = category;
   }
-
+  
+  get options(): OptionList {
+    return this._options;
+  }
+  set options(options: OptionList) {
+    this._options = options;
+  }
 }

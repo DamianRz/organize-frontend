@@ -1,7 +1,9 @@
 import Event from "./Event";
+
 export default class EventList {
 
   private _events: Event[];
+
 
   constructor() {
     this._events = [];
@@ -25,5 +27,9 @@ export default class EventList {
 
   getArray() {
     return this._events;
+  }
+
+  getLast() {
+    return this.get(this.length()-1);
   }
 }

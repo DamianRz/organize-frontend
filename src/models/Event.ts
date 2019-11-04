@@ -1,3 +1,5 @@
+import QuestionnaireList from './QuestionnaireList';
+
 export default class Event {
 
   private _id: number;
@@ -10,6 +12,8 @@ export default class Event {
   private _created: string;
   private _state: number;
 
+  private _questionnaires: QuestionnaireList;
+
   constructor() {
     this._id = -1;
     this._name = "";
@@ -20,6 +24,8 @@ export default class Event {
     this._guestsNumber = 0;
     this._created = "";
     this._state = 0;
+
+    this._questionnaires = new QuestionnaireList();
   }
 
   get id(): number { 
@@ -84,10 +90,11 @@ export default class Event {
   set state(state: number) { 
     this._state = state;
   }
-
-  // getJsonStructure() { 
-  //   return {
-  //     ""
-  //   }
-  // }
+  
+  get questionnaires(): QuestionnaireList { 
+    return this._questionnaires;
+  }
+  set questionnaires(qList: QuestionnaireList) { 
+    this._questionnaires = qList;
+  }
 }

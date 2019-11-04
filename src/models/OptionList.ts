@@ -26,4 +26,8 @@ export default class OptionList {
   getArray() {
     return this._options;
   }
+
+  getLast() {
+    return this.get(this.length()-1);
+  }
 }
