@@ -1,28 +1,34 @@
 export default class Validation {
 
-  private fieldsFail: any = [];
+  private fieldsFail: any  = [];
 
-  validateFields(fields: any) {
+  validateFields(forms: any[]) {
     this.fieldsFail = [];
-
     let noErrors = true;
-    Object.keys(fields).forEach((field: any) => {
-      if (fields[field].value == '' && fields[field].required == true) {
-        noErrors = false;
-        let fieldError: any = {
-          name: field,
-          error: 'campo requerido'
+    forms.forEach(fields => {
+      Object.keys(fields).forEach((field: any) => {
+        if (fields[field].value == '' && fields[field].required == true) {
+          noErrors = false;
+          let fieldError = {
+            name: field,
+            form: fields.formName,
+            error: 'campo requerido'
+          }
+          this.fieldsFail.push(fieldError);
         }
-        this.fieldsFail.push(fieldError);
-      }
+      });
     });
     return noErrors;
   }
 
-  get(nameField: string) {
+  get(nameField: string) { // formName.field
     let errorString = '';
+
+    const formName = nameField.split('.')[0];
+    const fieldName = nameField.split('.')[1];
+
     this.fieldsFail.forEach((field: any) => {
-      if (field.name == nameField) {
+      if (field.form == formName && field.name == fieldName) {
         errorString = field.error;
       }
     });
@@ -30,9 +36,16 @@ export default class Validation {
   }
 
   clearObject(object: any) {
-    Object.keys(object).forEach((key: any) => {
-      object[key].value = '';
-    })
-    return object;
+    try {
+      Object.keys(object).forEach((key: any) => {
+        if (key != 'formName') {
+          object[key].value = '';
+        }
+      })
+      return object;
+    } catch (error) {
+      console.error(error)
+      return {};
+    }
   }
 }
