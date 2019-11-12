@@ -23,88 +23,117 @@ export default class HomeCode extends Vue {
 
   // dialogs in the window
   private dialogs: any = {
-    events: false,
+    events: {
+      show: false,
+      mode: 0
+    },
   }
 
+  private userInfo = this.$store.getters.userInfo;
   // vars object is used for add a new Event with the vinculated objects
   private event: Event = new Event();
+  private events: EventList = new EventList();
   private questionnaires: QuestionnaireList = new QuestionnaireList();
+  private questionnairesOfEvent: QuestionnaireList = new QuestionnaireList();
   private questions: QuestionList = new QuestionList();
   private options: OptionList = new OptionList();
 
-  // others undefined function vars
-  private selectedEvent = [];
-  private qList: QuestionnaireList = new QuestionnaireList();
-  private selectedQ = [];
-
   // vars only used for validation and model of the text-fields
-  private newEvent = {
-    name: '',
-    location: '',
-    start: '',
-    end: '',
-    description: '',
-    guestsNumber: 0,
-  }
-  private newQuestionnaire = {
-    name: {
+  private newEventData: any = {
+    formName: 'newEventData',
+    _id: {
+      value: -1,
+      required: false,
+    },
+    _name: {
       value: '',
       required: true,
     },
-    category: {
+    _location: {
       value: '',
       required: true,
     },
-  }
-  private newQuestion = {
-    name: {
+    _start: {
       value: '',
       required: true,
     },
-    category: {
+    _end: {
       value: '',
       required: true,
     },
-    idType: {
+    _description: {
+      value: '',
+      required: true,
+    },
+    _guestsNumber: {
+      value: '',
+      required: true,
+    },
+    _created: {
+      value: '',
+      required: false,
+    },
+    _state: {
       value: '',
       required: false,
     },
   }
-  private newOption = {
-    name: {
+  private newQuestionnaire: any = {
+    formName: 'newQuestionnaireData',
+    _name: {
       value: '',
       required: true,
     },
-    cost: {
+    _category: {
+      value: '',
+      required: true,
+    },
+  }
+  private newQuestion: any = {
+    formName: 'newQuestionData',
+    _name: {
+      value: '',
+      required: true,
+    },
+    _category: {
+      value: '',
+      required: true,
+    },
+    _idType: {
+      value: '',
+      required: false,
+    },
+  }
+  private newOption: any = {
+    formName: 'newOptionData',
+    _name: {
+      value: '',
+      required: true,
+    },
+    _cost: {
       value: 0,
       required: true,
     },
   }
 
-  private eventList: EventList = new EventList();
-  private newQuestionnaires: QuestionnaireList = new QuestionnaireList();
-  private newQuestions: QuestionList = new QuestionList();
-  private newOptions: OptionList = new OptionList();
-
   // Headers of the tables
   private headers: any[] = [
     { text: "Nombre", value: "_name", },
-    { text: "Lugar", value: "_location" },
     { text: "Inicio", value: "_start" },
-    { text: "Invitados", value: "_guestsNumber" },
     { text: "Acciones", value: 'action' }
   ];
   private headersQ: any[] = [
-    { text: "Nombre", value: "name", },
-    { text: "Categoria", value: "category" },
-  ];
-  private headersOption: any[] = [
-    { text: "Nombre", value: "name", },
-    { text: "Cost", value: "cost" },
+    { text: "Nombre", value: "_name", },
+    { text: "Categoria", value: "_category" },
+    { text: "Acciones", value: 'action' }
   ];
   private headersQuestion: any[] = [
-    { text: "Nombre", value: "name", },
-    { text: "Categoria", value: "category" },
+    { text: "Nombre", value: "_name", },
+    { text: "Categoria", value: "_category" },
+  ];
+  private headersOption: any[] = [
+    { text: "Nombre", value: "_name", },
+    { text: "Cost", value: "_cost" },
   ];
 
   // Methods
@@ -112,80 +141,126 @@ export default class HomeCode extends Vue {
     this.getEvents();
   }
 
+  // close event dialog
   closeDialog() {
     this.wizard = 1;
-    this.dialogs.events = false;
+    this.dialogs.events.show = false;
   }
 
-  private createEvent() {
-    this.questionnaires.getArray().forEach((q: Questionnaire) => {
-      console.log('questionnaire: ')
-      q.questions.getArray().forEach((qu: Question) => {
-        console.log('question')
-        qu.options.getArray().forEach((o: Option) => {
-          console.log('option')
-        });
-      });
-    });    
-    // console.log('questions: '+this.questionnaires.getLast().questions.length)
-  }
+  private async createEvent() {
+    if (this.v.validateFields([this.newEventData])) {
+      let event = new Event();
 
-  private addNewQuestionnaire() {
-    if (this.v.validateFields(this.newQuestionnaire)) {
-      let value = {
-        name: this.newQuestionnaire.name.value,
-        category: this.newQuestionnaire.category.value,
+      let data = {
+        token: this.userInfo.token,
+        event: {
+          name: this.newEventData._name.value,
+          location: this.newEventData._location.value,
+          start: '0000-00-00 00:00:00',
+          end: '0000-00-00 00:00:00',
+          description: this.newEventData._description.value,
+          guestsNumber: this.newEventData._guestsNumber.value,
+          created: '0000-00-00 00:00:00',
+          state: true,
+        },
+        joinEvent: {
+          idUser: this.userInfo.id,
+          idType: 1,
+        }
       }
-      // test
-      this.questionnaires.add(Object.assign(new Questionnaire(), value))
-      // normal use
-      this.newQuestionnaires.add(Object.assign(new Questionnaire(), value));
+      const responsePostEvent: any = await this.backend.send('post:event', data);
+      if (responsePostEvent.statusCode == 200) {
 
-      Object.assign(this.newQuestionnaire, this.v.clearObject(this.newQuestionnaire))
+        await Promise.all(
+          this.questionnairesOfEvent.getArray().map(async q => {
+            let data2 = {
+              token: this.userInfo.token,
+              link: {
+                idEvent: responsePostEvent.value.id,
+                idQuestionnaire: q['_id']
+              }
+            }    
+            console.log(data2.link.idQuestionnaire)
+            const responsePostEventQO: any = await this.backend.send('post:eventQuestionnaireOption', data2)
+            console.log(responsePostEventQO)
+          })
+        );
+      }
+    }
+  }
+
+  // methods used in tables in dialogs
+  private getNewQuestionnaires() {
+    try {
+      return this.questionnaires.getArray();
+    } catch (error) {
+      return [];
+    }
+  }
+  private getNewQuestions() {
+    try {
+      return this.questionnaires.getLast().questions.getArray();
+    } catch (error) {
+      return [];
+    }
+  }
+  private getNewOptions() {
+    try {
+      return this.questionnaires.getLast().questions.getLast().options.getArray();
+    } catch (error) {
+      return [];
+    }
+  }
+
+  private includeQuestionnaire(item: any) {
+    if (this.questionnairesOfEvent.getIndexById(item._id) == -1) {
+      this.questionnairesOfEvent.add(item);
+    }
+  }
+  private removeQuestionnaire(item: any) {
+    this.questionnairesOfEvent.remove(this.questionnairesOfEvent.getIndexById(item._id));
+  }
+  private includeQuestion() {
+  }
+  private includeOption() {
+  }
+
+  // button save in the sub-dialogs
+  private addNewQuestionnaire() {
+    if (this.v.validateFields([this.newQuestionnaire])) {
+      let value = {
+        name: this.newQuestionnaire._name.value,
+        category: this.newQuestionnaire._category.value,
+      }
+      // this.questionnaires.setLast(Object.assign(new Questionnaire(), value));
+      this.questionnaires.add(Object.assign(new Questionnaire(), value))
+      Object.assign(this.newQuestionnaire, this.v.clearObject(this.newQuestionnaire));
       this.wizard = 2;
     } else {
       console.log('error validation addNewQuestion')
     }
   }
-
   private addNewQuestion() {
-    if (this.v.validateFields(this.newQuestion)) {
+    if (this.v.validateFields([this.newQuestion])) {
       let value = {
-        name: this.newQuestion.name.value,
-        category: this.newQuestion.category.value,
-        idType: this.newQuestion.idType.value,
+        name: this.newQuestion._name.value,
+        category: this.newQuestion._category.value,
+        idType: this.newQuestion._idType.value,
       }
-      // test
-       
-      this.questionnaires.getLast()
-      .questions.add(Object.assign(new Question(), value))
-
-      // this.questionnaires.getLast().questions.add(Object.assign(new Question(), value))
-      // normal use
-      this.newQuestions.add(Object.assign(new Question(), value));
-
+      this.questions.add(Object.assign(new Question(), value))
       Object.assign(this.newQuestion, this.v.clearObject(this.newQuestion))
       this.wizard = 3;
     } else {
       console.log('error validation addNewQuestion')
     }
   }
-
   private addNewOption() {
-    if (this.v.validateFields(this.newOption)) {
+    if (this.v.validateFields([this.newOption])) {
       let value = {
-        name: this.newOption.name.value,
-        cost: this.newOption.cost.value,
+        name: this.newOption._name.value,
+        cost: this.newOption._cost.value,
       }
-      // test
-      this.questionnaires.getLast()
-      .questions.getLast()
-      .options.add(Object.assign(new Option(), value));
-      
-      // this.questions.getLast().options.add(Object.assign(new Option(), value));
-      // normal use
-      this.newOptions.add(Object.assign(new Option(), value));
-
+      this.options.add(Object.assign(new Option(), value))
       Object.assign(this.newOption, this.v.clearObject(this.newOption));
       this.wizard = 4;
     } else {
@@ -193,51 +268,74 @@ export default class HomeCode extends Vue {
     }
   }
 
-  private includeQuestionnaire() {
-    this.questionnaires.add(new Questionnaire());
-    this.wizard = 3;
-  }
-  private includeQuestion() {
-    this.questionnaires.getLast().questions.add(new Question());
-    this.wizard = 4;
-  }
-  private includeOption() {
-    this.questionnaires.getLast().questions.getLast().options.add(new Option());
-    this.wizard = 5;
-  }
-
+  // Backend methods
   private async getEvents() {
-    let userInfo = this.$store.getters.userInfo;
     let data = {
-      token: userInfo.token,
+      token: this.userInfo.token,
       joinEvent: {
-        idUser: userInfo.id,
+        idUser: this.userInfo.id,
         idType: 1,
       }
     }
     const getEvents: any = await this.backend.send('get:joinEvents', data);
-    Object.assign(this.eventList, getEvents.value)
+    Object.assign(this.events, getEvents.value)
   }
 
-  private async showEventDialog() {
-    let data = {
+
+
+  // GET QUESTIONNAIRES
+  private async getQuestionnaires(idEvent: number) {
+    let data1 = {
+      token: this.userInfo.token,
       questionnaire: {
-        idEvent: 1
+        idUser: this.userInfo.id,
       }
     }
-    this.dialogs.events = true;
-    // const getQ: any = await this.backend.send('get:questionnaireByEventId', data);
-    // Object.assign(this.qList, getQ.value)
+    const getQuestionnairesByIdUser: any = await this.backend.send('get:questionnaireByIdUser', data1);
+    this.questionnaires = new QuestionnaireList();
+    Object.assign(this.questionnaires, getQuestionnairesByIdUser.value);
+    let data = {
+      token: this.userInfo.token,
+      questionnaire: {
+        idEvent: idEvent,
+      }
+    }
+    const getQuestionnairesOfEvent: any = await this.backend.send('get:questionnaireByEventId', data);
+    Object.assign(this.questionnairesOfEvent, getQuestionnairesOfEvent.value);
+  }
+
+
+  private async showEventDialog() {
+    let data1 = {
+      token: this.userInfo.token,
+      questionnaire: {
+        idUser: this.userInfo.id,
+      }
+    }
+    const getQuestionnairesByIdUser: any = await this.backend.send('get:questionnaireByIdUser', data1);
+    this.questionnaires = new QuestionnaireList();
+    Object.assign(this.questionnaires, getQuestionnairesByIdUser.value);
+    Object.assign(this.newEventData, this.v.clearObject(this.newEventData));
+    this.questionnairesOfEvent = new QuestionnaireList();
+    this.dialogs.events.mode = 0; //mode add : 0
+    this.dialogs.events.show = true;
+  }
+
+  private async editEvent(item: any) {
+    Object.assign(this.newEventData, this.v.clearObject(this.newEventData));
+    Object.keys(item).forEach(key => {
+      this.newEventData[key].value = item[key];
+      // console.log(key)
+    });
+    await this.getQuestionnaires(item._id);
+    this.dialogs.events.mode = 1; //mode edit : 1
+    this.dialogs.events.show = true;
+  }
+  private deleteEvent(item: any) {
   }
 
   private selectEvent(item: any) {
-    console.log('selected')
-  }
-
-  private editItem(item: any) {
-  }
-
-  private deleteItem(item: any) {
+    // this.getQuestionnaires(item.id)
   }
 
 }
