@@ -7,19 +7,19 @@ export default class QuestionnaireList {
     this._questionnaires = [];
   }
 
-  get(index: number) { 
+  get(index: number) {
     return this._questionnaires[index];
   }
 
-  set(index: number, q: Questionnaire) { 
+  set(index: number, q: Questionnaire) {
     this._questionnaires[index] = q;
   }
 
-  add(q: Questionnaire) { 
+  add(q: Questionnaire) {
     this._questionnaires.push(q);
   }
 
-  length() { 
+  length() {
     return this._questionnaires.length;
   }
 
@@ -28,6 +28,24 @@ export default class QuestionnaireList {
   }
 
   getLast() {
-    return this.get(this.length()-1);
+    return this.get(this.length() - 1);
   }
+  setLast(q: Questionnaire) {
+    Object.assign(this._questionnaires[this.length() - 1], q);
+  }
+
+  getIndexById(id: number) {
+    let pos = -1;
+    for (let i = 0; i < this._questionnaires.length; i++) {
+      if (this._questionnaires[i]['_id'] == id) {
+        pos = i;
+      }
+    }
+    return pos;
+  }
+
+  remove(index: number) {
+    this._questionnaires.splice(index, 1)
+  }
+
 }

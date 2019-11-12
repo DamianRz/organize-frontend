@@ -30,4 +30,8 @@ export default class OptionList {
   getLast() {
     return this.get(this.length()-1);
   }
+
+  setLast(o: Option) {
+    Object.assign(this._options[this.length()-1], o);
+  }
 }

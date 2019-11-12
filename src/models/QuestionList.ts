@@ -28,7 +28,10 @@ export default class QuestionList {
   }
 
   getLast() {
-    // return this.get(this.length()-1);
     return this._questions[this._questions.length-1];
+  }
+
+  setLast(q: Question) {
+    Object.assign(this._questions[this.length()-1], q);
   }
 }
