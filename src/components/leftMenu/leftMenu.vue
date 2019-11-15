@@ -41,7 +41,7 @@
 
 <script lang="ts">
 // import Vuetify from "vuetify/lib";
-import { Watch, Component } from "vue-property-decorator";
+import {  Prop, Watch, Component } from "vue-property-decorator";
 import LeftMenuCode from "./leftMenuCode";
 import "./leftMenuStyle.scss";
 // import ReservationDialog from "../dialogs/ReservationDialog/ReservationDialog.vue";
@@ -51,5 +51,7 @@ import "./leftMenuStyle.scss";
     // ReservationDialog
   }
 })
-export default class LeftMenu extends LeftMenuCode {}
+export default class LeftMenu extends LeftMenuCode {
+    @Prop({ default: false }) value!: boolean;
+}
 </script>

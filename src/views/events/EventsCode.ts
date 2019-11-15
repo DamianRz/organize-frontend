@@ -12,6 +12,8 @@ import Option from '@/models/Option';
 
 export default class HomeCode extends Vue {
 
+  private datexd = true;
+
   // methods for connect to backend
   private backend = new IntegrationBackend();
 
@@ -26,6 +28,9 @@ export default class HomeCode extends Vue {
     events: {
       show: false,
       mode: 0
+    },
+    deleteEvent: {
+      show: false,
     },
   }
 
@@ -150,10 +155,10 @@ export default class HomeCode extends Vue {
   private async createEvent() {
     if (this.v.validateFields([this.newEventData])) {
       let event = new Event();
-
       let data = {
         token: this.userInfo.token,
         event: {
+          id: -1,
           name: this.newEventData._name.value,
           location: this.newEventData._location.value,
           start: '0000-00-00 00:00:00',
@@ -170,22 +175,75 @@ export default class HomeCode extends Vue {
       }
       const responsePostEvent: any = await this.backend.send('post:event', data);
       if (responsePostEvent.statusCode == 200) {
+        data.event.id = responsePostEvent.value.id; 
+        this.events.add(Object.assign(new Event() ,data.event));
 
-        await Promise.all(
-          this.questionnairesOfEvent.getArray().map(async q => {
-            let data2 = {
-              token: this.userInfo.token,
-              link: {
-                idEvent: responsePostEvent.value.id,
-                idQuestionnaire: q['_id']
-              }
-            }    
-            console.log(data2.link.idQuestionnaire)
-            const responsePostEventQO: any = await this.backend.send('post:eventQuestionnaireOption', data2)
-            console.log(responsePostEventQO)
-          })
-        );
+        let linkQuestionnaireData: any = {
+          token: this.userInfo.token,
+          link: {
+            idEvent: responsePostEvent.value.id,
+            idQuestionnaires: [],
+          }
+        } 
+        this.questionnairesOfEvent.getArray().forEach((questionnaire: Questionnaire) => {
+          linkQuestionnaireData.link.idQuestionnaires.push(questionnaire['_id']);
+        });
+        let response = await this.backend.send('post:eventQuestionnaireOption', linkQuestionnaireData);
+        this.dialogs.events.show = false;
       }
+    }
+  }
+
+  private async saveEvent() {
+    if (this.v.validateFields([this.newEventData])) {
+      let data = {
+        token: this.userInfo.token,
+        event: {
+          id: this.newEventData._id.value,
+          name: this.newEventData._name.value,
+          location: this.newEventData._location.value,
+          start: '0000-00-00 00:00:00',
+          end: '0000-00-00 00:00:00',
+          description: this.newEventData._description.value,
+          guestsNumber: this.newEventData._guestsNumber.value,
+          created: '0000-00-00 00:00:00',
+          state: true,
+        },
+        joinEvent: {
+          idUser: this.userInfo.id,
+          idType: 1,
+        }
+      }
+      //save event
+      const responsePutEvent: any = await this.backend.send('put:event', data);
+      if (responsePutEvent.statusCode == 200) {
+        let event: any = new Event();
+        Object.keys(event).forEach(key => {
+          event[key] = this.newEventData[key].value;
+        });
+        this.events.set(this.events.getIndexById(event.id), event);
+        // remove all questionnaires related with the event
+        let dataRemove = {
+          token: this.userInfo.token,
+          link: {
+            idEvent: event.id,
+          }
+        }
+        const responseDeleteEventQO: any = await this.backend.send('delete:eventQuestionnaireOption', dataRemove);
+        // add the assigned questionnaires
+        let linkQuestionnaireData: any = {
+          token: this.userInfo.token,
+          link: {
+            idEvent: event.id,
+            idQuestionnaires: [],
+          }
+        } 
+        this.questionnairesOfEvent.getArray().forEach((questionnaire: Questionnaire) => {
+          linkQuestionnaireData.link.idQuestionnaires.push(questionnaire['_id']);
+        });
+        let response = await this.backend.send('post:eventQuestionnaireOption', linkQuestionnaireData);
+      }
+      this.dialogs.events.show = false;
     }
   }
 
@@ -281,8 +339,6 @@ export default class HomeCode extends Vue {
     Object.assign(this.events, getEvents.value)
   }
 
-
-
   // GET QUESTIONNAIRES
   private async getQuestionnaires(idEvent: number) {
     let data1 = {
@@ -303,7 +359,6 @@ export default class HomeCode extends Vue {
     const getQuestionnairesOfEvent: any = await this.backend.send('get:questionnaireByEventId', data);
     Object.assign(this.questionnairesOfEvent, getQuestionnairesOfEvent.value);
   }
-
 
   private async showEventDialog() {
     let data1 = {
@@ -331,7 +386,20 @@ export default class HomeCode extends Vue {
     this.dialogs.events.mode = 1; //mode edit : 1
     this.dialogs.events.show = true;
   }
-  private deleteEvent(item: any) {
+
+  private async deleteEvent(item: any) {
+    let data = {
+      token: this.userInfo.token,
+      event: {
+        id: item['_id'],
+      }
+    }
+    const resultDeleteEvent: any = await this.backend.send('delete:event', data);
+    if (resultDeleteEvent.statusCode == 200) {
+      const index = this.events.indexOf(item);
+      this.events.remove(index);
+    }
+    this.dialogs.deleteEvent.show = false;
   }
 
   private selectEvent(item: any) {

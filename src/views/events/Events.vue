@@ -16,20 +16,17 @@
           class="elevation-1"
         >
           <template v-slot:top>
-            <v-btn 
-              @click="showEventDialog()" 
-              color="green" 
-              dark 
-              right 
-              absolute 
-              small 
-              fab
-            >+</v-btn>
+            <v-btn @click="showEventDialog()" color="green" dark right absolute small fab>+</v-btn>
           </template>
 
           <template v-slot:item.action="{ item }">
             <v-icon class="mr-3" @click="editEvent(item)">edit</v-icon>
-            <v-icon @click="deleteEvent(item)">delete</v-icon>
+            <v-icon @click="dialogs.deleteEvent.show = true">delete</v-icon>
+            <v-snackbar v-model="dialogs.deleteEvent.show" vertical>
+              Esta seguro de borrar el evento seleccionado?
+              <v-btn text @click="dialogs.deleteEvent.show = false">Cancelar</v-btn>
+              <v-btn color="red" text @click="deleteEvent(item)">Borrar</v-btn>
+            </v-snackbar>
           </template>
         </v-data-table>
       </div>
@@ -38,7 +35,11 @@
     </div>
 
     <!-- New Event Dialog  -->
-    <v-dialog v-model="dialogs.events.show" persistent>
+    <v-dialog
+      v-model="dialogs.events.show"
+      :fullscreen="$vuetify.breakpoint.name == 'xs'"
+      persistent
+    >
       <v-card class="event-dialog">
         <v-card-title></v-card-title>
         <v-card-text>
@@ -47,35 +48,41 @@
             <v-stepper-items>
               <!-- STEP 1 Events -->
               <v-stepper-content step="1">
-                <h2 class="font-title">{{ dialogs.events.mode ? 'Editar evento' : 'Crear nuevo evento' }}</h2>
+                <h2
+                  class="font-title"
+                >{{ dialogs.events.mode ? 'Editar evento' : 'Crear nuevo evento' }}</h2>
                 <div class="step1-box">
                   <div class="info-box">
-                    <v-text-field 
+                    <v-text-field
                       v-model="newEventData._name.value"
                       :error="v.get('newEventData._name') != ''"
-                      :error-messages="v.get('newEventData._name')"   
+                      :error-messages="v.get('newEventData._name')"
                       label="Nombre"
                     ></v-text-field>
-                    <v-text-field 
-                      v-model="newEventData._location.value" 
+                    <v-text-field
+                      v-model="newEventData._location.value"
                       :error="v.get('newEventData._location') != ''"
-                      :error-messages="v.get('newEventData._location')"   
+                      :error-messages="v.get('newEventData._location')"
                       label="Lugar"
                     ></v-text-field>
-                    <v-text-field 
-                      v-model="newEventData._start.value" 
+
+                    <date-field :v-model="datexd" ></date-field>
+
+                    <v-text-field
+                      v-model="newEventData._start.value"
                       :error="v.get('newEventData._start') != ''"
                       :error-messages="v.get('newEventData._start')"
                       label="Inicio"
                     ></v-text-field>
-                    <v-text-field 
-                      v-model="newEventData._end.value" 
+                    <v-text-field
+                      v-model="newEventData._end.value"
                       :error="v.get('newEventData._end') != ''"
                       :error-messages="v.get('newEventData._end')"
                       label="Final"
                     ></v-text-field>
-                    <v-text-field 
-                      v-model="newEventData._description.value" 
+                    
+                    <v-text-field
+                      v-model="newEventData._description.value"
                       :error="v.get('newEventData._description') != ''"
                       :error-messages="v.get('newEventData._description')"
                       label="Descripcion"
@@ -143,15 +150,10 @@
                 text
                 small
                 class="footer-button"
-                @click.native=""
+                @click.native="saveEvent()"
               >Guardar cambios</v-btn>
 
-              <v-btn
-                text
-                small
-                class="footer-button"
-                @click.native="closeDialog()"
-              >cancelar</v-btn>
+              <v-btn text small class="footer-button" @click.native="closeDialog()">cancelar</v-btn>
             </div>
           </v-stepper>
         </v-card-text>
@@ -166,10 +168,12 @@ import "../../styles/fonts.scss";
 import "./EventsStyle.scss";
 import CustomTable from "../../components/CustomTable.vue";
 import { Component, Vue } from "vue-property-decorator";
+import DateField from '../../components/dialogs/DateField/DateField.vue';
 
 @Component({
   components: {
-    CustomTable
+    CustomTable,
+    DateField
   }
 })
 export default class EventsPage extends EventsCode {

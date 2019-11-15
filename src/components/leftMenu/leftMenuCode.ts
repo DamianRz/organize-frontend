@@ -28,8 +28,3 @@ export default class LeftMenuCode extends MenuItems {
         this["$router"].push(route);
     }
 }
-
-
-
-
-

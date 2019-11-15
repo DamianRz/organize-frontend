@@ -6,7 +6,6 @@ export default class Questionnaire {
   private _idUser: number;
   private _name: string;
   private _category: string;
-
   private _questions: QuestionList;
 
   constructor() {
@@ -52,5 +51,4 @@ export default class Questionnaire {
   set questions(questions: QuestionList) {
     this._questions = questions;
   }
-
 }

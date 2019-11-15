@@ -19,18 +19,19 @@
   background-color: rgb(255, 255, 255);
 
   .tables-box {
-    display: flex;
+    // display: flex;
     width: 100%;
     height: 60%;
 
     .event-table-box {
       position: relative;
-      width: calc(100% / 2);
-      height: 100%;
+      // width: calc(100% / 2);
+      // height: 100%;
     }
     .map-box {
       position: relative;
-      width: calc(100% / 2);
+      // width: calc(100% / 2);
+      width: 100%;
       height: 100%;
       background-image: url("http://joomly.net/frontend/web/images/googlemap/map.png");
     }
@@ -52,18 +53,20 @@
   .step1-box {
     text-align: center;
     display: flex;
+    // background-color: aliceblue;
+
     .info-box {
       // background-color: rgb(165, 165, 165);
       width: 250px;
     }
+
     .tables {
       padding: 20px;
+      // background-color: green;
     
-      // width: ;
       .questionnaire-table-box {
+        // background-color: yellow;
         position: relative;
-        // width: 40%;
-        height: 200px;
       }
     }
   }
