@@ -11,7 +11,7 @@ Vue.use(Vuex);
 
 export const store = new Vuex.Store({
   state: {
-    drawerLeft: false,
+    drawer: false,
     userInfo: {
       id: undefined,
       token: undefined,
@@ -19,8 +19,8 @@ export const store = new Vuex.Store({
     },
   },
   mutations: {
-    drawerLeft(state, value) {
-      state.drawerLeft = value;
+    setLeftDrawer(state, value) {
+      state.drawer = value;
     },
     userInfo(state, value) {
       state.userInfo = value
@@ -29,7 +29,7 @@ export const store = new Vuex.Store({
   getters: {
     userInfo: state => state.userInfo,
     userLogged: state => state.userInfo.id ? undefined : false,
-    drawerLeft: state => state.drawerLeft,
+    drawer: state => state.drawer,
   },
   plugins: [vuexLocal.plugin]
 });

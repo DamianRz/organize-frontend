@@ -15,5 +15,10 @@ export default new Router({
       name: 'Events',
       component: () => import('./views/events/Events.vue')
     },
+    {
+      path: '/Questionnaires',
+      name: 'Questionnaires',
+      component: () => import('./views/questionnaires/Questionnaires.vue')
+    },
   ],
 });

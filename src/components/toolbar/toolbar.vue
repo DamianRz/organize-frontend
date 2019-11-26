@@ -1,5 +1,5 @@
 <template v-cloak>
-  <v-toolbar id="toolbar" fixed light height="65px" v-if="!$store.state.drawer.left && !$store.getters.userLogged">
+  <v-toolbar id="toolbar" fixed dark height="65px" v-if="!$store.state.drawer.left && !$store.getters.userLogged">
     <!-- LEFT MENU - BUTTON  -->
     <v-btn
       class="left-menu-btn d-flex d-sm-none"

@@ -7,7 +7,7 @@ export default class AppCode extends Vue {
     }
 
     init() {
-        if (!this.$store.state.userInfo) {
+        if (!this.$store.getters.userLogged) {
             this.$router.push("/");
         }
     }
