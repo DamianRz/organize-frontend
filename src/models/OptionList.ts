@@ -19,7 +19,7 @@ export default class OptionList {
     this._options.push(option);
   }
 
-  length() {
+  get length(): number {
     return this._options.length;
   }
 
@@ -28,10 +28,18 @@ export default class OptionList {
   }
 
   getLast() {
-    return this.get(this.length()-1);
+    return this.get(this.length-1);
+  }
+
+  remove(index: number) {
+    this._options.splice(index, 1);
+  }
+
+  clear() {
+    this._options = [];
   }
 
   setLast(o: Option) {
-    Object.assign(this._options[this.length()-1], o);
+    Object.assign(this._options[this.length-1], o);
   }
 }

@@ -6,6 +6,7 @@ export default class Event {
   private _name: string;
   private _location: string;
   private _start: string;
+  private _startHour: string;
   private _end: string;
   private _description: string;
   private _guestsNumber: number;
@@ -19,6 +20,7 @@ export default class Event {
     this._name = "";
     this._location = "";
     this._start = "";
+    this._startHour = "";
     this._end = "";
     this._description = "";
     this._guestsNumber = 0;
@@ -54,6 +56,13 @@ export default class Event {
   }
   set start(start: string) { 
     this._start = start;
+  }
+
+  get startHour(): string { 
+    return this._startHour;
+  }
+  set startHour(start: string) { 
+    this._startHour = start;
   }
 
   get end(): string { 

@@ -19,7 +19,7 @@ export default class QuestionList {
     this._questions.push(q);
   }
 
-  public length() {
+  get length(): number {
     return this._questions.length;
   }
 
@@ -29,6 +29,10 @@ export default class QuestionList {
 
   getLast() {
     return this._questions[this._questions.length-1];
+  }
+
+  remove(index: number) {
+    this._questions.splice(index, 1);
   }
 
   setLast(q: Question) {
