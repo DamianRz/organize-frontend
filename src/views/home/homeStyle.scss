@@ -1,22 +1,96 @@
-#home {
-  .info-box {
-    position: absolute;
-    z-index: 2;
-    width: 100%;
-    text-align: center;
-    background-color: #00000080;
-    padding: 20px;
+.xs-format {
+  width: 100% !important;
+  margin-left: 0 !important;
+}
 
-    .welcome {
-      font-size: x-large;
-      font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
-      font-style: italic;
-      color: rgba(255, 255, 255, 0.904);
+.sm-format,
+.md-format,
+.lg-format,
+.xl-format {
+  width: 60%;
+  margin-left: 20%;
+}
+
+// paleta de colores a partir de la imagen de fondo
+.color-list {
+  color: #bc7b3c;
+  color: #9c5424;
+  color: #645b54;
+  color: #5d4936;
+  color: #040404;
+}
+
+#homePage {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  text-align: center;
+
+  .fields {
+    .v-input__slot ::after {
+      color: #9c5424;
     }
-    .button-access {
+    
+  }
+
+  .stepper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    // background-color: gray;
+
+    .back-img {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0px;
+      left: 0px;
+    }
+
+    .v-stepper__items {
+      height: 100% !important;
+      .v-stepper__content {
+        height: 100% !important;
+        .v-stepper__wrapper {
+          height: 100% !important;  
+          // background-image: url('https://drop.ndtv.com/TECH/product_database/images/2152017124957PM_635_nokia_3310.jpeg');
+          // background-color: rgb(117, 212, 133);
+        }
+      }
+    }
+  }
+
+  .box-access {
+    position: relative;
+    width: 400px;
+    top: 100px;
+    padding: 30px;
+    padding-top: 30px;
+    margin: auto;
+    border-style: solid;
+    border-color: rgb(163, 163, 163);
+    border-width: 2px;
+    border-radius: 5px;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.747);
+    border-top-left-radius: 40px;
+    border-bottom-right-radius: 40px;
+
+    .title {
       margin: 20px;
-      opacity: 0.9;
-      width: 120px;
+    }
+
+    .footer {
+      position: relative;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    .signup-button {
+      position: relative;
+      width: 100%;
+      height: 60px;
+      margin-top: 40px;
     }
   }
 }
