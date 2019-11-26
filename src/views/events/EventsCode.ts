@@ -1,5 +1,5 @@
 import { Vue } from 'vue-property-decorator';
-import IntegrationBackend from '../../libs/IntegrationBackend';
+import IntegrationBackend from '../../utils/IntegrationBackend';
 import Event from '../../models/Event';
 import EventList from '../../models/EventList';
 import QuestionnaireList from '../../models/QuestionnaireList';
@@ -11,9 +11,6 @@ import Question from '@/models/Question';
 import Option from '@/models/Option';
 
 export default class HomeCode extends Vue {
-
-  private datexd = true;
-
   // methods for connect to backend
   private backend = new IntegrationBackend();
 
@@ -24,18 +21,22 @@ export default class HomeCode extends Vue {
   private wizard = 1;
 
   // dialogs in the window
-  private dialogs: any = {
-    events: {
-      show: false,
-      mode: 0
-    },
-    deleteEvent: {
-      show: false,
-    },
+  private dialogs = {
+    events: false,
+    deleteEvent: false
+  }
+
+  // interactionsMode is used for change the state of the buttons
+  private interactionsMode = {
+    events: 0
   }
 
   private userInfo = this.$store.getters.userInfo;
+
   // vars object is used for add a new Event with the vinculated objects
+  
+  private newEvent: Event = new Event();
+  
   private event: Event = new Event();
   private events: EventList = new EventList();
   private questionnaires: QuestionnaireList = new QuestionnaireList();
@@ -44,86 +45,32 @@ export default class HomeCode extends Vue {
   private options: OptionList = new OptionList();
 
   // vars only used for validation and model of the text-fields
-  private newEventData: any = {
-    formName: 'newEventData',
-    _id: {
-      value: -1,
-      required: false,
-    },
-    _name: {
-      value: '',
-      required: true,
-    },
-    _location: {
-      value: '',
-      required: true,
-    },
-    _start: {
-      value: '',
-      required: true,
-    },
-    _end: {
-      value: '',
-      required: true,
-    },
-    _description: {
-      value: '',
-      required: true,
-    },
-    _guestsNumber: {
-      value: '',
-      required: true,
-    },
-    _created: {
-      value: '',
-      required: false,
-    },
-    _state: {
-      value: '',
-      required: false,
-    },
+  private eventFields = {
+    objectName: 'newEvent',
+    fields:[
+      // ['id', 'number'],
+      ['name', 'string'],
+      ['location', 'string'],
+      ['start', 'string'],
+      ['end', 'string'],
+      ['description', 'string'],
+      ['guestsNumber', 'number'],
+      // ['created', 'string'],
+    ]
   }
-  private newQuestionnaire: any = {
-    formName: 'newQuestionnaireData',
-    _name: {
-      value: '',
-      required: true,
-    },
-    _category: {
-      value: '',
-      required: true,
-    },
-  }
-  private newQuestion: any = {
-    formName: 'newQuestionData',
-    _name: {
-      value: '',
-      required: true,
-    },
-    _category: {
-      value: '',
-      required: true,
-    },
-    _idType: {
-      value: '',
-      required: false,
-    },
-  }
-  private newOption: any = {
-    formName: 'newOptionData',
-    _name: {
-      value: '',
-      required: true,
-    },
-    _cost: {
-      value: 0,
-      required: true,
-    },
+
+  private questionnaireFields = {
+    objectName: 'newQuestionnaire',
+    fields:[
+      ['name', 'string'],
+      ['category', 'string'],
+    ]
   }
 
   // Headers of the tables
   private headers: any[] = [
     { text: "Nombre", value: "_name", },
+    { text: "Lugar", value: "_location", },
     { text: "Inicio", value: "_start" },
     { text: "Acciones", value: 'action' }
   ];
@@ -131,14 +78,6 @@ export default class HomeCode extends Vue {
     { text: "Nombre", value: "_name", },
     { text: "Categoria", value: "_category" },
     { text: "Acciones", value: 'action' }
-  ];
-  private headersQuestion: any[] = [
-    { text: "Nombre", value: "_name", },
-    { text: "Categoria", value: "_category" },
-  ];
-  private headersOption: any[] = [
-    { text: "Nombre", value: "_name", },
-    { text: "Cost", value: "_cost" },
   ];
 
   // Methods
@@ -149,22 +88,22 @@ export default class HomeCode extends Vue {
   // close event dialog
   closeDialog() {
     this.wizard = 1;
-    this.dialogs.events.show = false;
+    this.dialogs.events = false;
   }
 
   private async createEvent() {
-    if (this.v.validateFields([this.newEventData])) {
-      let event = new Event();
+    if (this.v.validateFields(this.newEvent, [this.eventFields])) {
+      // let event = new Event();
       let data = {
         token: this.userInfo.token,
         event: {
           id: -1,
-          name: this.newEventData._name.value,
-          location: this.newEventData._location.value,
+          name: this.newEvent.name,
+          location: this.newEvent.location,
           start: '0000-00-00 00:00:00',
           end: '0000-00-00 00:00:00',
-          description: this.newEventData._description.value,
-          guestsNumber: this.newEventData._guestsNumber.value,
+          description: this.newEvent.description,
+          guestsNumber: this.newEvent.guestsNumber,
           created: '0000-00-00 00:00:00',
           state: true,
         },
@@ -189,23 +128,23 @@ export default class HomeCode extends Vue {
           linkQuestionnaireData.link.idQuestionnaires.push(questionnaire['_id']);
         });
         let response = await this.backend.send('post:eventQuestionnaireOption', linkQuestionnaireData);
-        this.dialogs.events.show = false;
+        this.dialogs.events = false;
       }
     }
   }
 
   private async saveEvent() {
-    if (this.v.validateFields([this.newEventData])) {
+    if (this.v.validateFields(this.newEvent, [this.eventFields])) {
       let data = {
         token: this.userInfo.token,
         event: {
-          id: this.newEventData._id.value,
-          name: this.newEventData._name.value,
-          location: this.newEventData._location.value,
+          id: this.newEvent.id,
+          name: this.newEvent.name,
+          location: this.newEvent.location,
           start: '0000-00-00 00:00:00',
           end: '0000-00-00 00:00:00',
-          description: this.newEventData._description.value,
-          guestsNumber: this.newEventData._guestsNumber.value,
+          description: this.newEvent.description,
+          guestsNumber: this.newEvent.guestsNumber,
           created: '0000-00-00 00:00:00',
           state: true,
         },
@@ -217,16 +156,12 @@ export default class HomeCode extends Vue {
       //save event
       const responsePutEvent: any = await this.backend.send('put:event', data);
       if (responsePutEvent.statusCode == 200) {
-        let event: any = new Event();
-        Object.keys(event).forEach(key => {
-          event[key] = this.newEventData[key].value;
-        });
-        this.events.set(this.events.getIndexById(event.id), event);
+        this.events.set(this.events.getIndexById(this.newEvent.id), this.newEvent);
         // remove all questionnaires related with the event
         let dataRemove = {
           token: this.userInfo.token,
           link: {
-            idEvent: event.id,
+            idEvent: this.newEvent.id,
           }
         }
         const responseDeleteEventQO: any = await this.backend.send('delete:eventQuestionnaireOption', dataRemove);
@@ -234,7 +169,7 @@ export default class HomeCode extends Vue {
         let linkQuestionnaireData: any = {
           token: this.userInfo.token,
           link: {
-            idEvent: event.id,
+            idEvent: this.newEvent.id,
             idQuestionnaires: [],
           }
         } 
@@ -243,7 +178,7 @@ export default class HomeCode extends Vue {
         });
         let response = await this.backend.send('post:eventQuestionnaireOption', linkQuestionnaireData);
       }
-      this.dialogs.events.show = false;
+      this.dialogs.events = false;
     }
   }
 
@@ -281,49 +216,6 @@ export default class HomeCode extends Vue {
   private includeQuestion() {
   }
   private includeOption() {
-  }
-
-  // button save in the sub-dialogs
-  private addNewQuestionnaire() {
-    if (this.v.validateFields([this.newQuestionnaire])) {
-      let value = {
-        name: this.newQuestionnaire._name.value,
-        category: this.newQuestionnaire._category.value,
-      }
-      // this.questionnaires.setLast(Object.assign(new Questionnaire(), value));
-      this.questionnaires.add(Object.assign(new Questionnaire(), value))
-      Object.assign(this.newQuestionnaire, this.v.clearObject(this.newQuestionnaire));
-      this.wizard = 2;
-    } else {
-      console.log('error validation addNewQuestion')
-    }
-  }
-  private addNewQuestion() {
-    if (this.v.validateFields([this.newQuestion])) {
-      let value = {
-        name: this.newQuestion._name.value,
-        category: this.newQuestion._category.value,
-        idType: this.newQuestion._idType.value,
-      }
-      this.questions.add(Object.assign(new Question(), value))
-      Object.assign(this.newQuestion, this.v.clearObject(this.newQuestion))
-      this.wizard = 3;
-    } else {
-      console.log('error validation addNewQuestion')
-    }
-  }
-  private addNewOption() {
-    if (this.v.validateFields([this.newOption])) {
-      let value = {
-        name: this.newOption._name.value,
-        cost: this.newOption._cost.value,
-      }
-      this.options.add(Object.assign(new Option(), value))
-      Object.assign(this.newOption, this.v.clearObject(this.newOption));
-      this.wizard = 4;
-    } else {
-      console.log('error validation addNewOption');
-    }
   }
 
   // Backend methods
@@ -370,21 +262,19 @@ export default class HomeCode extends Vue {
     const getQuestionnairesByIdUser: any = await this.backend.send('get:questionnaireByIdUser', data1);
     this.questionnaires = new QuestionnaireList();
     Object.assign(this.questionnaires, getQuestionnairesByIdUser.value);
-    Object.assign(this.newEventData, this.v.clearObject(this.newEventData));
+    // clear
+    this.newEvent = new Event();
     this.questionnairesOfEvent = new QuestionnaireList();
-    this.dialogs.events.mode = 0; //mode add : 0
-    this.dialogs.events.show = true;
+    this.interactionsMode.events = 0; //mode add : 0
+    this.dialogs.events = true;
   }
 
   private async editEvent(item: any) {
-    Object.assign(this.newEventData, this.v.clearObject(this.newEventData));
-    Object.keys(item).forEach(key => {
-      this.newEventData[key].value = item[key];
-      // console.log(key)
-    });
+    this.newEvent = new Event();
+    Object.assign(this.newEvent, item);
     await this.getQuestionnaires(item._id);
-    this.dialogs.events.mode = 1; //mode edit : 1
-    this.dialogs.events.show = true;
+    this.interactionsMode.events = 1; //mode edit : 1
+    this.dialogs.events = true;
   }
 
   private async deleteEvent(item: any) {
@@ -399,7 +289,7 @@ export default class HomeCode extends Vue {
       const index = this.events.indexOf(item);
       this.events.remove(index);
     }
-    this.dialogs.deleteEvent.show = false;
+    this.dialogs.deleteEvent = false;
   }
 
   private selectEvent(item: any) {
