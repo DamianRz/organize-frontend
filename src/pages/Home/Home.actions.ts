@@ -74,20 +74,21 @@ export default class HomeCode extends vue {
 
   async signIn() {
     if (this.v.validateFields(this.newUser, [this.signInFields])) {
-      let userData = {
+      let data = {
         email: this.newUser.email,
         password: this.newUser.password,
       }
       try {
         // Integration Backend POST user send()
-        const result: any = await this.backend.send('post:signIn', { user: userData });
+        const result: any = await this.backend.send('post:signIn', { user: data });
         if (result.statusCode == 200) {
+          console.log('id user ',result.value.id)
           let user = {
             id: result.value.id,
             username: result.value.username
           }
           // save in the store the user data
-          this['$store'].commit('userInfo', userData)
+          this['$store'].commit('userInfo', user)
           // goto Identification page
           this["$router"].push('/Events');
         } else {

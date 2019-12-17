@@ -1,7 +1,7 @@
 
 <template>
   <div id="events">
-    <h1 class="font-title">Mis Cuestionarios</h1> 
+    <h1 class="font-title">Mis Cuestionarios</h1>
 
     <div class="tables-box">
       <div class="event-table-box">
@@ -57,12 +57,29 @@
                       :error-messages="v.get('newQuestionnaire.name')"
                       label="Nombre"
                     ></v-text-field>
-                    <v-text-field
-                      v-model="newQuestionnaire.category"
+
+                    <!-- CATEGORY OF QUESTIONNAIRE -->
+                    <!-- function of tags -->
+                    <p>Tags</p>
+                    <v-combobox
+                      v-model="chips"
+                      :items="items"
                       :error="v.get('newQuestionnaire.category') != ''"
                       :error-messages="v.get('newQuestionnaire.category')"
-                      label="Categoria"
-                    ></v-text-field>
+                      outlined
+                      chips
+                      clearable
+                      label="Seleccione de la lista"
+                      multiple
+                      solo
+                    >
+                      <template v-slot:selection="{ attrs, item, select, selected }">
+                        <v-chip close v-bind="attrs" :input-value="selected" @click="select">
+                          <strong>{{ item }}</strong>
+                          <v-icon @click="remove(item)">close</v-icon>
+                        </v-chip>
+                      </template>
+                    </v-combobox>
                   </div>
 
                   <!-- right - step  -->
@@ -179,11 +196,9 @@
                         class="elevation-0"
                       >
                         <template v-slot:item.action="{ item }">
-                          
                           <v-icon class="mr-3" @click="editNewQuestion(item)">edit</v-icon>
 
                           <v-icon @click="deleteNewQuestion(item)">delete</v-icon>
-                        
                         </template>
                       </v-data-table>
                     </div>

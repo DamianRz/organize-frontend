@@ -38,6 +38,14 @@ export default class HomeCode extends Vue {
     deleteQuestionnaire: false,
   }
 
+  private chips = [];
+  private items = ['Fiesta', 'Comida', 'Cena', 'Noche', 'Deporte'];
+
+  remove(item: never) {
+    this.chips.splice(this.chips.indexOf(item), 1)
+    this.chips = [...this.chips]
+  }
+
   // Control activity of the buttons of the main actions
   private disabledButtons: boolean = false;
 

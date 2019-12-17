@@ -62,22 +62,19 @@
 
   .box-access {
     position: relative;
-    width: 400px;
+    max-width: 400px;
     top: 100px;
     padding: 30px;
     padding-top: 30px;
     margin: auto;
-    border-style: solid;
-    border-color: rgb(163, 163, 163);
-    border-width: 2px;
-    border-radius: 5px;
-    border-radius: 4px;
     background-color: rgba(255, 255, 255, 0.747);
     border-top-left-radius: 40px;
     border-bottom-right-radius: 40px;
+    text-align: center;
 
     .title {
       margin: 20px;
+      color: #5d4936;
     }
 
     .footer {

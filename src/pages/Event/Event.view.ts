@@ -1,4 +1,4 @@
-import { Vue } from 'vue-property-decorator';
+import { Vue, Watch } from 'vue-property-decorator';
 import IntegrationBackend from '../../utils/IntegrationBackend';
 import Event from '../../models/Event';
 import EventList from '../../models/EventList';
@@ -9,8 +9,14 @@ import OptionList from '@/models/OptionList';
 import QuestionList from '@/models/QuestionList';
 import Question from '@/models/Question';
 import Option from '@/models/Option';
+import Datetime from '@/utils/DateTime';
 
 export default class HomeCode extends Vue {
+
+  // TEST
+  public test= new Date().toISOString().substr(0, 10);
+
+  private datetime = new Datetime();
   // methods for connect to backend
   private backend = new IntegrationBackend();
 
@@ -34,9 +40,9 @@ export default class HomeCode extends Vue {
   private userInfo = this.$store.getters.userInfo;
 
   // vars object is used for add a new Event with the vinculated objects
-  
+
   private newEvent: Event = new Event();
-  
+
   private event: Event = new Event();
   private events: EventList = new EventList();
   private questionnaires: QuestionnaireList = new QuestionnaireList();
@@ -47,7 +53,7 @@ export default class HomeCode extends Vue {
   // vars only used for validation and model of the text-fields
   private eventFields = {
     objectName: 'newEvent',
-    fields:[
+    fields: [
       // ['id', 'number'],
       ['name', 'string'],
       ['location', 'string'],
@@ -61,7 +67,7 @@ export default class HomeCode extends Vue {
 
   private questionnaireFields = {
     objectName: 'newQuestionnaire',
-    fields:[
+    fields: [
       ['name', 'string'],
       ['category', 'string'],
     ]
@@ -114,8 +120,8 @@ export default class HomeCode extends Vue {
       }
       const responsePostEvent: any = await this.backend.send('post:event', data);
       if (responsePostEvent.statusCode == 200) {
-        data.event.id = responsePostEvent.value.id; 
-        this.events.add(Object.assign(new Event() ,data.event));
+        data.event.id = responsePostEvent.value.id;
+        this.events.add(Object.assign(new Event(), data.event));
 
         let linkQuestionnaireData: any = {
           token: this.userInfo.token,
@@ -123,7 +129,7 @@ export default class HomeCode extends Vue {
             idEvent: responsePostEvent.value.id,
             idQuestionnaires: [],
           }
-        } 
+        }
         this.questionnairesOfEvent.getArray().forEach((questionnaire: Questionnaire) => {
           linkQuestionnaireData.link.idQuestionnaires.push(questionnaire['_id']);
         });
@@ -172,7 +178,7 @@ export default class HomeCode extends Vue {
             idEvent: this.newEvent.id,
             idQuestionnaires: [],
           }
-        } 
+        }
         this.questionnairesOfEvent.getArray().forEach((questionnaire: Questionnaire) => {
           linkQuestionnaireData.link.idQuestionnaires.push(questionnaire['_id']);
         });
@@ -182,6 +188,7 @@ export default class HomeCode extends Vue {
     }
   }
 
+  
   // methods used in tables in dialogs
   private getNewQuestionnaires() {
     try {
@@ -227,6 +234,7 @@ export default class HomeCode extends Vue {
         idType: 1,
       }
     }
+    console.log('get Events ', data)
     const getEvents: any = await this.backend.send('get:joinEvents', data);
     Object.assign(this.events, getEvents.value)
   }
@@ -272,6 +280,18 @@ export default class HomeCode extends Vue {
   private async editEvent(item: any) {
     this.newEvent = new Event();
     Object.assign(this.newEvent, item);
+
+    // formatting date
+    let { start, end, created } = this.newEvent;
+    // DATETIME=> 2019-12-28T03:00:00.000Z | FILTER=>  28-12-2019 03:00:00
+    start = new Date().toISOString().substr(0, 10)
+    // console.log('filterd date: ', start)
+    // end = this.datetime.normalize(end);
+    // created = this.datetime.normalize(created);
+    this.newEvent.start = start;
+    // this.newEvent.end = end;
+    // this.newEvent.created = created;
+
     await this.getQuestionnaires(item._id);
     this.interactionsMode.events = 1; //mode edit : 1
     this.dialogs.events = true;
@@ -296,4 +316,9 @@ export default class HomeCode extends Vue {
     // this.getQuestionnaires(item.id)
   }
 
+  @Watch("newEvent.startDate")
+  onStartDateChanged() {
+    console.log('cambia')
+    this.newEvent.end = "";
+  }
 }

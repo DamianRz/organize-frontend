@@ -8,17 +8,17 @@ export default new Router({
     {
       path: '/',
       name: 'Home',
-      component: () => import('./views/home/home.vue')
+      component: () => import('./pages/Home/Home.vue')
     },
     {
       path: '/Events',
       name: 'Events',
-      component: () => import('./views/events/Events.vue')
+      component: () => import('./pages/Event/Events.vue')
     },
     {
       path: '/Questionnaires',
       name: 'Questionnaires',
-      component: () => import('./views/questionnaires/Questionnaires.vue')
+      component: () => import('./pages/Questionnaire/Questionnaires.vue')
     },
   ],
 });

@@ -9,11 +9,12 @@
           :v-model="events.getArray()"
           :headers="headers"
           :items="events.getArray()"
-          :items-per-page="5"
+          :items-per-page="500"
           single-select
           item-key="name"
           show-select
           class="elevation-0"
+          hide-default-footer
         >
           <template v-slot:top>
             <v-btn @click="showEventDialog()" color="green" dark right absolute small fab>+</v-btn>
@@ -30,7 +31,6 @@
           </template>
         </v-data-table>
       </div>
-
       <!-- <div class="map-box"></div> -->
     </div>
 
@@ -55,6 +55,7 @@
                       :error-messages="v.get('newEvent.name')"
                       label="Nombre"
                     ></v-text-field>
+
                     <v-text-field
                       v-model="newEvent.location"
                       :error="v.get('newEvent.location') != ''"
@@ -62,32 +63,49 @@
                       label="Lugar"
                     ></v-text-field>
 
+
+                    {{ 'start date test '+ test }}
                     <time-field
+                      v-model="test"
                       type="date"
-                      v-model="newEvent.start"
-                      @time="(time)=> { newEvent.start = time }"
                       :error="v.get('newEvent.start') != ''"
                       :errorMessage="v.get('newEvent.start')"
-                      label="Fecha inicio"
+                      label="Fecha de inicio"
                       lang="es"
                     ></time-field>
 
                     <time-field
                       type="hour"
-                      v-model="newEvent.startHour"
+                      :v-model="newEvent.startHour"
                       @time="(time)=> { newEvent.startHour = time }"
+                      :min="datetime.getHour()"
                       :error="v.get('newEvent.startHour') != ''"
                       :errorMessage="v.get('newEvent.startHour')"
                       label="Hora inicio"
                       lang="es"
                     ></time-field>
-                    
-                    <v-text-field
-                      v-model="newEvent.end"
+
+                    <time-field
+                      type="date"
+                      :v-model="newEvent.end"
+                      @time="(time)=> { newEvent.end = time }"
+                      :min="newEvent.start"
                       :error="v.get('newEvent.end') != ''"
-                      :error-messages="v.get('newEvent.end')"
-                      label="Final"
-                    ></v-text-field>
+                      :errorMessage="v.get('newEvent.end')"
+                      label="Fecha fin"
+                      lang="es"
+                    ></time-field>
+
+                    <time-field
+                      type="hour"
+                      :v-model="newEvent.endHour"
+                      @time="(time)=> { newEvent.endHour = time }"
+                      :min="newEvent.startHour"
+                      :error="v.get('newEvent.endHour') != ''"
+                      :errorMessage="v.get('newEvent.endHour')"
+                      label="Hora fin"
+                      lang="es"
+                    ></time-field>
 
                     <v-text-field
                       v-model="newEvent.description"
@@ -171,12 +189,12 @@
 </template>
  
 <script lang='ts'>
-import EventsCode from "./EventsCode";
+import EventView from "./Event.view";
 import "../../styles/fonts.scss";
-import "./EventsStyle.scss";
+import "./Event.scss";
 import CustomTable from "../../components/CustomTable.vue";
 import { Component, Vue } from "vue-property-decorator";
-import TimeField from "../../components/dialogs/TimeField/TimeField.vue";
+import TimeField from "../../components/TimeField/TimeField.vue";
 
 @Component({
   components: {
@@ -184,7 +202,7 @@ import TimeField from "../../components/dialogs/TimeField/TimeField.vue";
     TimeField
   }
 })
-export default class EventsPage extends EventsCode {
+export default class EventsPage extends EventView {
   created() {
     this.init();
   }

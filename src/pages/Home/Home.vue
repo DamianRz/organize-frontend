@@ -103,16 +103,13 @@
 </template>
 
 <script lang="ts">
-//code
-import HomeCode from "./homeCode";
-//style
-import "./homeStyle.scss";
+import HomeActions from "./Home.actions";
+import "./Home.scss";
 import "../../styles/fonts.scss";
-//components
 import { Component } from "vue-property-decorator";
 
 @Component({
   components: {}
 })
-export default class Home extends HomeCode {}
+export default class Home extends HomeActions {}
 </script>
