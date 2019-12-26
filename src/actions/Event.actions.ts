@@ -1,30 +1,39 @@
 import IntegrationBackend from '../utils/IntegrationBackend';
+import IQuestionnaire from '../types/Questionnaire.type';
 import IEvent from '../types/Event.type';
+import IUserStore from '@/types/UserStore';
 import Event from '../models/Event';
-import EventList from '../models/EventList';
+import ResultObject from '@/models/ResultObject';
 import Datetime from '../utils/DateTime';
-import QuestionnaireList from '@/models/QuestionnaireList';
-import Questionnaire from '@/models/Questionnaire';
 
 export default class EventActions {
   private backend: any = new IntegrationBackend();
-
-  private userInfo: {id: number, token: string} = {
+  private userInfo: IUserStore = {
     id: -1,
+    username: '',
     token: ''
   }
-
-  constructor(user: {id: number, token: string}) {
-    this.userInfo = user;
+  public baseEvent: IEvent = {
+    id: -1,
+    name: '',
+    location: '',
+    startDate: '',
+    startHour: '',
+    endDate: '',
+    endHour: '',
+    description: '',
+    guestsNumber: 0,
+    created: '',
+    state: true,
   }
 
-  // Vars used for EventActions
-  public events: EventList = new EventList();
-
-  // Functions
+  constructor(userInfo: IUserStore) {
+    this.userInfo = userInfo;
+  }
 
   // GET
-  async get() {
+  async getAll() {
+    let events: IEvent[] = [];
     let data = {
       token: this.userInfo.token,
       joinEvent: {
@@ -32,50 +41,49 @@ export default class EventActions {
         idType: 1,
       }
     }
-    const response: { value: string, statusCode: number } = await this.backend.send('get:joinEvents', data);
-    Object.assign(this.events, response.value)
+    const response: ResultObject = await this.backend.send('get:joinEvents', data);
+    console.log(response.value)
+    if (response.statusCode == 200) {
+      (response.value._events || []).map((e: Event) => {
+        // for (let i = 0; i < 50; i++) {
+          let event: IEvent = {
+            id: e['_id'],
+            name: e['_name'],
+            created: e['_created'],
+            description: e['_description'],
+
+            startDate: new Datetime().getDate(e['_start']),
+            endDate: new Datetime().getDate(e['_end']),
+
+            startHour: new Datetime().getHour(e['_start']).substr(0, 5),
+            endHour: new Datetime().getHour(e['_end']).substr(0, 5),
+
+            guestsNumber: (e['_guestsNumber'] | 0),
+            location: e['_location'],
+            state: e['_state']
+          };
+          events.push(event);
+
+        // }
+      });
+      return events;
+    } else {
+      return null
+    }
   }
 
+
+
   // ADD
-  async add(event: IEvent, questionnaires: QuestionnaireList) {
+  async add(event: IEvent, questionnaires: IQuestionnaire[]) {
     let data = {
       token: this.userInfo.token,
       event: {
         id: -1,
+        start: `${event.startDate} ${event.startHour}`,
+        end: `${event.endDate} ${event.endHour}`,
         name: event.name,
         location: event.location,
-        start: event.start,
-        end: event.end,
-        description: event.description,
-        guestsNumber: event.guestsNumber,
-        created: new Datetime().now(),
-        state: true,
-      },
-      joinEvent: {
-        idUser: this.userInfo.id,
-        idType: 1,
-      }
-    }
-
-    const response: { value: any, statusCode: number } = await this.backend.send('post:event', data);
-    if (response.statusCode == 200) {
-      data.event.id = response.value.id;
-      this.events.add(Object.assign(new Event(), data.event));
-      // link event-questionnaires
-      this.linkQuestionnaires(questionnaires, data.event.id)
-    }
-  }
-
-  // SAVE
-  async save(event: IEvent, questionnaires: QuestionnaireList) {
-    let data = {
-      token: this.userInfo.token,
-      event: {
-        id: event.id,
-        name: event.name,
-        location: event.location,
-        start: event.start,
-        end: event.end,
         description: event.description,
         guestsNumber: event.guestsNumber,
         created: event.created,
@@ -87,33 +95,71 @@ export default class EventActions {
       }
     }
 
+    const response: ResultObject = await this.backend.send('post:event', data);
+    if (response.statusCode == 200) {
+      event.id = response.value.id;
+      // link event-questionnaires
+      this.linkQuestionnaires(questionnaires, event.id);
+      return Object.assign(event, data.event);
+    } else {
+      return null;
+    }
+  }
+
+  // SAVE
+  async save(event: IEvent, questionnaires: IQuestionnaire[]) {
+    let data = {
+      token: this.userInfo.token,
+      event: {
+        id: event.id,
+        name: event.name,
+        location: event.location,
+        start: `${event.startDate} ${event.startHour}`,
+        end: `${event.endDate} ${event.endHour}`,
+        description: event.description,
+        guestsNumber: event.guestsNumber,
+        created: event.created,
+        state: true,
+      },
+      joinEvent: {
+        idUser: this.userInfo.id,
+        idType: 1,
+      }
+    }
     const response: any = await this.backend.send('put:event', data);
     if (response.statusCode == 200) {
-      this.events.set(this.events.getIndexById(event.id), Object.assign(new Event(), event));
       // delete links event-questionnaire_option
-      this.removeLinksQuestionnaires(event.id)
+      this.removeLinksQuestionnaires(event.id);
       // link event-questionnaires
-      this.linkQuestionnaires(questionnaires, data.event.id)
+      this.linkQuestionnaires(questionnaires, data.event.id);
+      return { statusCode: 200 };
+    } else {
+      return response;
     }
   }
 
   // REMOVE
-  async remove(selectedEvent: Event) {
+  async remove(selectedEvent: IEvent) {
     let data = {
       token: this.userInfo.token,
       event: {
-        id: selectedEvent['_id'],
+        id: selectedEvent.id,
       }
     }
     const response: any = await this.backend.send('delete:event', data);
     if (response.statusCode == 200) {
-      const index = this.events.indexOf(selectedEvent);
-      this.events.remove(index);
+      // const index = this.events.indexOf(selectedEvent);
+      // this.events.remove(index);
+      return { statusCode: 200 }
+    } else {
+      return response;
     }
   }
 
+
+
   // LINK_QUESTIONNAIRES
-  async linkQuestionnaires(questionnaires: QuestionnaireList, idEvent: number) {
+  async linkQuestionnaires(questionnaires: IQuestionnaire[], idEvent: number) {
     let data: any = {
       token: this.userInfo.token,
       link: {
@@ -121,8 +167,8 @@ export default class EventActions {
         idQuestionnaires: [],
       }
     }
-    questionnaires.getArray().forEach((questionnaire: Questionnaire) => {
-      data.link.idQuestionnaires.push(questionnaire['_id']);
+    questionnaires.forEach((questionnaire: IQuestionnaire) => {
+      data.link.idQuestionnaires.push(questionnaire.id);
     });
     await this.backend.send('post:eventQuestionnaireOption', data);
   }

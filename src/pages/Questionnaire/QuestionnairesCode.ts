@@ -10,36 +10,34 @@ import QuestionList from '@/models/QuestionList';
 import Question from '@/models/Question';
 import Option from '@/models/Option';
 import ResultObject from '@/models/ResultObject';
+import QuestionnaireActions from '../../actions/Questionnaire.actions';
+
 
 export default class HomeCode extends Vue {
+  private userInfo = this.$store.getters.userInfo;
+  private questionnaireAction: QuestionnaireActions = new QuestionnaireActions(this.userInfo);
 
-  // methods for connect to backend
   private backend = new IntegrationBackend();
-
-  //validation of fields
   private v: Validation = new Validation();
-
-  // control of the step position in the dialogs
   private wizard = 1;
-
-  // interactionsMode is used for change the state of the buttons
   private interactionsMode = {
     // 0 = add / 1 = save
     questionnaires: 0,
     questions: 0,
     options: 0
   }
-
-  // dialogs in the window
   private dialogs: any = {
     questionnaires: false,
     questions: false,
     options: false,
     deleteQuestionnaire: false,
   }
-
   private chips = [];
   private items = ['Fiesta', 'Comida', 'Cena', 'Noche', 'Deporte'];
+
+
+
+
 
   remove(item: never) {
     this.chips.splice(this.chips.indexOf(item), 1)
@@ -49,7 +47,7 @@ export default class HomeCode extends Vue {
   // Control activity of the buttons of the main actions
   private disabledButtons: boolean = false;
 
-  private userInfo = this.$store.getters.userInfo;
+
 
   // vars object is used for add a new Event with the vinculated objects
   private newQuestionnaire: Questionnaire = new Questionnaire();
@@ -93,8 +91,8 @@ export default class HomeCode extends Vue {
 
   // Headers of the tables
   private headersQ: any[] = [
-    { text: "Nombre", value: "name", },
-    { text: "Categoria", value: "category" },
+    { text: "Nombre", value: "_name", },
+    { text: "Categoria", value: "_category" },
     { text: "Acciones", value: 'action' }
   ];
   private headersQuestion: any[] = [
@@ -109,8 +107,11 @@ export default class HomeCode extends Vue {
   ];
 
   // Methods
-  init() {
-    this.getQuestionnaires();
+  async init() {
+    let responseGetQuestionnaires = await this.questionnaireAction.getByUser();
+    if (responseGetQuestionnaires != null) {
+      this.questionnaires = responseGetQuestionnaires;
+    }
     this.getDefaultQuestions();
   }
 
@@ -119,45 +120,17 @@ export default class HomeCode extends Vue {
     this.dialogs.questionnaires = true;
   }
 
-  private async createQuestionnaire() {
-    if (this.v.validateFields(this.newQuestionnaire, [this.questionFields])) {
+  async addNewQuestionnaire() {
+    // console.log('questionnaire',this.newQuestionnaire)
+    // console.log('questions',this.questions)
+    if (this.v.validateFields(this.newQuestionnaire, [this.questionnaireFields])) {
       if (this.questions.length >= 1) {
-        let questionnaire = new Questionnaire();
-        let data: any = {
-          token: this.userInfo.token,
-          questionnaire: {
-            id: -1,
-            idUser: this.userInfo.id,
-            name: this.newQuestionnaire.name,
-            category: this.newQuestionnaire.category,
-            questions: []
-          }
-        }
-        // add questions into the array
-        this.questions.getArray().forEach((question: Question) => {
-          let qData: any = {
-            idType: question.idType,
-            name: question.name,
-            category: question.category,
-            options: []
-          }
-          // add options into the array
-          question.options.getArray().forEach((option: Option) => {
-            let oData: any = {
-              name: option.name,
-              cost: option.cost
-            }
-            qData.options.push(oData);
-          });
-          data.questionnaire.questions.push(qData);
-        });
-
-        const responsePostQuestionnaire: any = await this.backend.send('post:questionnaireFull', data);
-        if (responsePostQuestionnaire.statusCode == 200) {
-          alert(responsePostQuestionnaire);
-          // data.questionnaire.id = responsePostQuestionnaire.value.id;
-          // this.questionnaires.add(Object.assign(new Questionnaire(), data.questionnaire));
-          this.dialogs.questionnaires.show = false;
+        let response = await this.questionnaireAction.add(this.newQuestionnaire, this.questions);
+        if(response != null) {
+          this.questionnaires.add(response);
+          this.dialogs.questionnaires = false;
+        }else{
+          alert('Ocurrio un error')
         }
       } else {
         alert('Debe tener por lo menos una pregunta')
@@ -170,7 +143,7 @@ export default class HomeCode extends Vue {
     Object.assign(this.newQuestionnaire, questionnaire);
     // await this.getQuestionnaires();
     this.interactionsMode.questionnaires = 1; //mode edit : 1
-    this.dialogs.events = true;
+    this.dialogs.questionnaires = true;
   }
 
   private async saveQuestionnaire() {

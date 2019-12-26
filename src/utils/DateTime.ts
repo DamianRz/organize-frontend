@@ -6,20 +6,6 @@ export default class Datetime {
     return orderDate + (h == '' ? '' : ' ' + h);
   }
 
-  backendConvert(date: string, hour?: string) {
-    // let d = date.split('/');
-    let orderDate = date;//d[2] + '-' + d[1] + '-' + d[0];
-    let h = (hour == undefined ? '' : hour);
-    return orderDate + (h == '' ? '' : ' ' + h);
-  }
-
-  backendNow() {
-    return this.backendConvert(
-      new Date().toLocaleDateString(),
-      new Date().toLocaleTimeString()
-    );
-  }
-
   now(datetime?: string) {
     if (datetime) {
       return this.getDate(datetime) + ' ' + this.getHour(datetime);
@@ -78,5 +64,8 @@ export default class Datetime {
     return formated;
   }
 
-
+  getFormattedDate() {
+    let dParts = this.convert(this.getDate()).split('-');
+    return dParts[0] +'-'+ dParts[2] +'-'+ dParts[1];
+  }
 }

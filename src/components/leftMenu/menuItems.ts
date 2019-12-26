@@ -2,7 +2,7 @@ import Vue from "vue";
 
 export default class MenuItems extends Vue {
 
-  private menu: any = {
+  public menu: { options: any[] } = {
     options: [
       { name: "Eventos", icon: "", href: "", route: "/Events", toolbar: true },
       { name: "Cuestionarios", icon: "", href: "", route: "/Questionnaires", toolbar: true },
@@ -10,11 +10,14 @@ export default class MenuItems extends Vue {
     ]
   };
 
+  getItems() {
+    return this.menu.options;
+  }
+
   //go to the route
   public pageRouter(route: string) {
     if (route != "") {
-      this["$router"].push(route);
-
+      this.$router.push(route);
     }
   }
 

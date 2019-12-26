@@ -16,6 +16,15 @@ export default class TimeFieldCode extends Vue {
     this.time = this.convertDatetime(this.simpleDate)
   }
 
+  setTodayHour() {
+    // formatting hour
+    let hParts = new Date().toLocaleTimeString().split(' ')[0].split(':');
+    if(hParts[0].length == 1) {
+      hParts[0] = '0'+ hParts[0];
+    }
+    this.time = `${hParts[0]}:${hParts[1]}`;
+  }
+
   // Function of Datetime Formatting
   getDate(datetime?: string) {
     if (datetime) {

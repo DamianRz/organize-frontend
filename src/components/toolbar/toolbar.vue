@@ -1,27 +1,32 @@
 <template v-cloak>
-  <v-toolbar id="toolbar" fixed dark height="65px" v-if="!$store.state.drawer.left && !$store.getters.userLogged">
-    <!-- LEFT MENU - BUTTON  -->
-    <!-- <v-btn
+  <v-toolbar
+    id="toolbar"
+    fixed
+    flat
+    height="65px"
+    v-if="$store.getters.userLogged"
+  >
+    <v-btn
+      v-if="$store.getters.userLogged"
       class="left-menu-btn d-flex d-sm-none"
-      @click.native.stop="$store.commit('setLeftDrawer', true)"
-      fab
-      text
       small
+      color="rgb(39, 39, 39)"
+      dark
+      fab
+      @click.native.stop="$store.commit('setLeftDrawer', true)"
     >
-      <v-icon>menu</v-icon>
-    </v-btn> -->
+      <v-icon v-if="$store.getters.drawer">close</v-icon>
+      <v-icon v-else>menu</v-icon>
+    </v-btn>
 
-    <!-- LOGO  -->
-    <v-toolbar-title @click.stop="pageRouter('/')">
-      <!-- <img class="logo" src="@/assets/logo.png" @click.stop="pageRouter('/')" alt="Avatar" /> -->
+    <v-toolbar-title>
       <h2 class="toolbar-title">Organize</h2>
     </v-toolbar-title>
-
-    <div class="flex-grow-1"></div>
 
     <v-toolbar-items class="toolbar-items hidden-xs-only">
       <v-btn
         text
+        dark
         small
         class="toolbar-button"
         v-for="(item, index) in filteredConf"
@@ -35,19 +40,16 @@
       </v-btn>
     </v-toolbar-items>
 
-    <div class="right-box">
-    </div>
   </v-toolbar>
 </template>
 
 <script lang="ts">
-import ToolbarAction from "./toolbar.actions";
-import "./toolbar.scss";
+import ToolbarAction from "./Toolbar.actions";
+import "./Toolbar.scss";
 import { Watch, Component } from "vue-property-decorator";
 
 @Component({
-  components: {
-  }
+  components: {}
 })
 export default class Toolbar extends ToolbarAction {}
 </script>

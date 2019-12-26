@@ -1,14 +1,11 @@
 import Vue from 'vue';
 import vuetify from './plugins/vuetify';
-import App from './app/app.vue';
+import App from './App/App.vue';
 import router from './router';
 import { store } from './store';
 
 import io from 'socket.io-client';
 import VueSocketIOExt from 'vue-socket.io-extended';
-import Vuelidate from 'vuelidate'
-
-Vue.use(Vuelidate)
 
 const socket = io('http://localhost:8092');
 

@@ -13,21 +13,120 @@
 
 #events {
   position: relative;
-  height: 100%;
+  height: calc(100% - 65px);
   width: 100%;
-  padding-top: 100px;
   padding: 20px;
+  margin-top: 65px;
   background-color: white;
+
+  .content-info {
+    position: relative;
+    width: 100%;
+    height: 30px;
+  }
+
+  .search-box {
+    width: 100%;
+    display: flex;
+    margin-top: 30px;
+
+    .select {
+      position: relative;
+      width: 150px;
+      height: 100%;
+      margin-right: 10px;
+    }
+    .field {
+      position: relative;
+      width: calc(100% - 150px);
+      height: 100%;
+    }
+  }
 
   .tables-box {
     position: relative;
-    top: 50px;
     width: 100%;
-    height: 60%;
+    height: 80%;
+    border-radius: 15px;
 
     .event-table-box {
       position: relative;
+      height: 100%;
+      // background-color: red;
+
+      .event-container {
+        position: relative;
+        height: 100%;
+
+        .events-box {
+          position: relative;
+          width: 100%;
+          height: 480px;
+          overflow-y: scroll;
+          text-align: center;
+
+          border-style: solid;
+          // border-bottom-style: solid;
+          border-width: 1px;
+          border-color: #e0e0e0;
+          border-radius: 10px;
+          // background-color: #f8f8f8;
+          padding: 10px;
+
+          .event {
+            position: relative;
+            width: 100%;
+            height: 100px;
+
+            background-color: white;
+            border-style: solid;
+            border-width: 2px;
+            border-color: #dbdbdb;
+            border-width: 1px;
+            text-align: center;
+            margin-bottom: 20px;
+            border-top-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+            padding-top: 10px;
+
+            .icon-event {
+              position: absolute;
+              top: 20px;
+              left: 10px;
+              font-size: 60px;
+              color: #cecece;
+            }
+
+            .icon-edit {
+              position: absolute;
+              top: 5px;
+              right: 10px;
+            }
+
+            .icon-delete {
+              position: absolute;
+              bottom: 5px;
+              right: 10px;
+            }
+
+            .icon-back {
+              position: absolute;
+              width: 100%;
+              height: 100%;
+              font-size: 100px;
+              color: rgba(209, 209, 209, 0.493);
+            }
+          }
+
+          .message-table {
+            margin-top: 50%;
+            color: rgb(129, 129, 129);
+            
+          }
+        }
+      }
     }
+
     .map-box {
       position: relative;
       width: 100%;
@@ -49,6 +148,10 @@
 }
 
 .event-dialog {
+  .step-content {
+    text-align: center;
+  }
+
   .step1-box {
     text-align: center;
     display: flex;
@@ -59,7 +162,7 @@
 
     .tables {
       padding: 20px;
-    
+
       .questionnaire-table-box {
         position: relative;
       }

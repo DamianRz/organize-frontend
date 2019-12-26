@@ -9,25 +9,20 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
-    "@inotom/vue-go-top": "^1.1.0",
-    "@types/vuelidate": "^0.7.8",
-    "aos": "^2.3.4",
+    "@babel/plugin-syntax-dynamic-import": "^7.7.4",
     "axios": "^0.19.0",
+    "babel": "^6.23.0",
+    "babel-loader": "^8.0.6",
     "jsonwebtoken": "^8.5.1",
     "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.0",
     "vue": "^2.6.10",
-    "vue-backtotop": "^1.6.1",
     "vue-class-component": "^7.1.0",
     "vue-croppa": "^1.3.8",
-    "vue-i18n": "^8.14.1",
-    "vue-notification": "^1.3.16",
     "vue-property-decorator": "^8.2.2",
     "vue-router": "^3.1.3",
     "vue-socket.io": "^3.0.7",
     "vue-socket.io-extended": "^4.0.1",
-    "vue-zoomer": "^0.3.4",
-    "vuelidate": "^0.7.4",
     "vuetify": "^2.1.0",
     "vuex": "^3.1.1",
     "vuex-persist": "^2.1.0"
@@ -36,18 +31,12 @@
     "@types/jest": "^24.0.18",
     "@types/socket.io": "^2.1.4",
     "@types/socket.io-client": "^1.4.32",
-    "@typescript-eslint/eslint-plugin": "^2.5.0",
-    "@typescript-eslint/parser": "^2.5.0",
     "@vue/cli-plugin-babel": "^3.11.0",
     "@vue/cli-plugin-typescript": "^3.11.0",
     "@vue/cli-plugin-unit-jest": "^3.11.0",
     "@vue/cli-service": "^3.11.0",
     "@vue/test-utils": "^1.0.0-beta.29",
-    "babel-core": "^6.26.3",
     "concurrently": "^5.0.0",
-    "eslint": "^6.5.1",
-    "eslint-config-google": "^0.14.0",
-    "eslint-plugin-vue": "^5.2.3",
     "fibers": "^4.0.1",
     "node-sass": "^4.12.0",
     "nodemon": "^1.19.3",
@@ -102,9 +91,7 @@
     ],
     "testURL": "http://localhost/",
     "globals": {
-      "ts-jest": {
-        "babelConfig": true
-      }
+      "ts-jest": {}
     }
   }
 }

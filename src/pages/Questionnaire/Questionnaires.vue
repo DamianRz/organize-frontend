@@ -62,7 +62,7 @@
                     <!-- function of tags -->
                     <p>Tags</p>
                     <v-combobox
-                      v-model="chips"
+                      v-model="newQuestionnaire.category"
                       :items="items"
                       :error="v.get('newQuestionnaire.category') != ''"
                       :error-messages="v.get('newQuestionnaire.category')"
@@ -214,7 +214,7 @@
                 text
                 small
                 class="footer-button"
-                @click.native="createQuestionnaire()"
+                @click.native="addNewQuestionnaire()"
               >Crear cuestionario</v-btn>
 
               <v-btn

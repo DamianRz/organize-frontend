@@ -1,67 +1,57 @@
 import { Vue, Watch } from 'vue-property-decorator';
-import IntegrationBackend from '../../utils/IntegrationBackend';
-import Event from '../../models/Event';
-import EventList from '../../models/EventList';
-import QuestionnaireList from '../../models/QuestionnaireList';
-import Questionnaire from '../../models/Questionnaire';
+import EventActions from '@/actions/Event.actions';
+import QuestionnaireActions from '@/actions/Questionnaire.actions';
 import Validation from '@/utils/Validation';
-import OptionList from '@/models/OptionList';
-import QuestionList from '@/models/QuestionList';
-import Question from '@/models/Question';
-import Option from '@/models/Option';
+import UserStore from '@/types/UserStore';
+// import QuestionnaireList from '@/models/QuestionnaireList';
+import IEvent from '../../types/Event.type';
+import IQuestionnaire from '../../types/Questionnaire.type';
 import Datetime from '@/utils/DateTime';
 
 export default class HomeCode extends Vue {
 
-  // TEST
-  public test= new Date().toISOString().substr(0, 10);
-
-  private datetime = new Datetime();
-  // methods for connect to backend
-  private backend = new IntegrationBackend();
-
-  //validation of fields
+  private userInfo: UserStore = this.$store.getters.userInfo;
+  // Actions Classes
+  //.............
+  private eventActions: EventActions = new EventActions(this.userInfo);
+  private questionnaireActions: QuestionnaireActions = new QuestionnaireActions(this.userInfo);
+  //.............
+  private events: IEvent[] = [];
+  private newEvent: IEvent = this.eventActions.baseEvent;
+  private questionnaires: IQuestionnaire[] = [];
+  private questionnairesOfEvent: IQuestionnaire[] = [];
+  private datetime: Datetime = new Datetime();
   private v: Validation = new Validation();
-
-  // control of the step position in the dialogs
   private wizard = 1;
-
-  // dialogs in the window
   private dialogs = {
     events: false,
     deleteEvent: false
   }
 
-  // interactionsMode is used for change the state of the buttons
+  private search: {filter: string, value: string} = {
+    filter: '',
+    value: ''
+  }
+  private searchFilters: any = {
+    'nombre': 'name',
+    'fecha de inicio': 'startDate'
+  }
+
   private interactionsMode = {
     events: 0
   }
 
-  private userInfo = this.$store.getters.userInfo;
-
-  // vars object is used for add a new Event with the vinculated objects
-
-  private newEvent: Event = new Event();
-
-  private event: Event = new Event();
-  private events: EventList = new EventList();
-  private questionnaires: QuestionnaireList = new QuestionnaireList();
-  private questionnairesOfEvent: QuestionnaireList = new QuestionnaireList();
-  private questions: QuestionList = new QuestionList();
-  private options: OptionList = new OptionList();
-
-  // vars only used for validation and model of the text-fields
   private eventFields = {
     objectName: 'newEvent',
     fields: [
-      // ['id', 'number'],
       ['name', 'string'],
       ['location', 'string'],
-      ['start', 'string'],
-      ['end', 'string'],
+      ['startDate', 'string'],
+      ['endDate', 'string'],
+      ['startHour', 'string'],
+      ['endHour', 'string'],
       ['description', 'string'],
-      ['guestsNumber', 'number'],
-      // ['created', 'string'],
+      ['guestsNumber', 'number'] // fix this!
     ]
   }
 
@@ -73,130 +63,86 @@ export default class HomeCode extends Vue {
     ]
   }
 
-  // Headers of the tables
   private headers: any[] = [
-    { text: "Nombre", value: "_name", },
-    { text: "Lugar", value: "_location", },
-    { text: "Inicio", value: "_start" },
+    { text: "Nombre", value: "name", },
+    // { text: "Lugar", value: "location", },
+    // { text: "Fecha Inicio", value: "startDate" },
+    // { text: "Hora", value: "startHour" },
     { text: "Acciones", value: 'action' }
   ];
   private headersQ: any[] = [
-    { text: "Nombre", value: "_name", },
-    { text: "Categoria", value: "_category" },
+    { text: "Nombre", value: "name", },
+    { text: "Categoria", value: "category" },
     { text: "Acciones", value: 'action' }
   ];
 
-  // Methods
-  init() {
-    this.getEvents();
+
+  // Functions
+  async init() {
+    this.events = (await this.eventActions.getAll() || this.events);
+    this.questionnaires = (await this.questionnaireActions.getByUser() || this.questionnaires);
   }
 
-  // close event dialog
-  closeDialog() {
-    this.wizard = 1;
-    this.dialogs.events = false;
-  }
 
-  private async createEvent() {
+  // Actions  Functions
+
+  private async addEvent() {
     if (this.v.validateFields(this.newEvent, [this.eventFields])) {
-      // let event = new Event();
-      let data = {
-        token: this.userInfo.token,
-        event: {
-          id: -1,
-          name: this.newEvent.name,
-          location: this.newEvent.location,
-          start: '0000-00-00 00:00:00',
-          end: '0000-00-00 00:00:00',
-          description: this.newEvent.description,
-          guestsNumber: this.newEvent.guestsNumber,
-          created: '0000-00-00 00:00:00',
-          state: true,
-        },
-        joinEvent: {
-          idUser: this.userInfo.id,
-          idType: 1,
-        }
-      }
-      const responsePostEvent: any = await this.backend.send('post:event', data);
-      if (responsePostEvent.statusCode == 200) {
-        data.event.id = responsePostEvent.value.id;
-        this.events.add(Object.assign(new Event(), data.event));
-
-        let linkQuestionnaireData: any = {
-          token: this.userInfo.token,
-          link: {
-            idEvent: responsePostEvent.value.id,
-            idQuestionnaires: [],
-          }
-        }
-        this.questionnairesOfEvent.getArray().forEach((questionnaire: Questionnaire) => {
-          linkQuestionnaireData.link.idQuestionnaires.push(questionnaire['_id']);
-        });
-        let response = await this.backend.send('post:eventQuestionnaireOption', linkQuestionnaireData);
+      if (this.questionnairesOfEvent.length > 0) {
+        await this.eventActions.add(this.newEvent, this.questionnairesOfEvent);
         this.dialogs.events = false;
+      } else {
+        alert('debe tener como minimo un cuestionario asignado')
       }
+
     }
   }
 
   private async saveEvent() {
     if (this.v.validateFields(this.newEvent, [this.eventFields])) {
-      let data = {
-        token: this.userInfo.token,
-        event: {
-          id: this.newEvent.id,
-          name: this.newEvent.name,
-          location: this.newEvent.location,
-          start: '0000-00-00 00:00:00',
-          end: '0000-00-00 00:00:00',
-          description: this.newEvent.description,
-          guestsNumber: this.newEvent.guestsNumber,
-          created: '0000-00-00 00:00:00',
-          state: true,
-        },
-        joinEvent: {
-          idUser: this.userInfo.id,
-          idType: 1,
-        }
-      }
-      //save event
-      const responsePutEvent: any = await this.backend.send('put:event', data);
-      if (responsePutEvent.statusCode == 200) {
-        this.events.set(this.events.getIndexById(this.newEvent.id), this.newEvent);
-        // remove all questionnaires related with the event
-        let dataRemove = {
-          token: this.userInfo.token,
-          link: {
-            idEvent: this.newEvent.id,
-          }
-        }
-        const responseDeleteEventQO: any = await this.backend.send('delete:eventQuestionnaireOption', dataRemove);
-        // add the assigned questionnaires
-        let linkQuestionnaireData: any = {
-          token: this.userInfo.token,
-          link: {
-            idEvent: this.newEvent.id,
-            idQuestionnaires: [],
-          }
-        }
-        this.questionnairesOfEvent.getArray().forEach((questionnaire: Questionnaire) => {
-          linkQuestionnaireData.link.idQuestionnaires.push(questionnaire['_id']);
-        });
-        let response = await this.backend.send('post:eventQuestionnaireOption', linkQuestionnaireData);
-      }
+      await this.eventActions.save(this.newEvent, this.questionnairesOfEvent);
       this.dialogs.events = false;
     }
   }
 
-  
-  // methods used in tables in dialogs
+  private async deleteEvent(item: any) {
+    await this.eventActions.remove(item);
+    this.dialogs.deleteEvent = false;
+  }
+
+  private async getQuestionnairesx(idEvent: number) {
+    await this.questionnaireActions.getByEvent(idEvent);
+  }
+
+  private async showEventDialog() {
+    this.questionnaires = (await this.questionnaireActions.getByUser() || []);
+    // reset vars
+    this.newEvent = this.eventActions.baseEvent;
+    this.questionnairesOfEvent = [];
+    this.interactionsMode.events = 0; //mode add : 0
+    this.dialogs.events = true;
+  }
+
+
+  private async editEvent(item: IEvent) {
+    this.newEvent = this.eventActions.baseEvent;
+    Object.assign(this.newEvent, item);
+
+    this.questionnairesOfEvent = (await this.questionnaireActions.getByEvent(item.id) || []);
+    console.log(this.questionnairesOfEvent)
+    this.interactionsMode.events = 1; //mode edit : 1
+    this.dialogs.events = true;
+  }
+
+
   private getNewQuestionnaires() {
     try {
-      return this.questionnaires.getArray();
+      return this.questionnaires;
     } catch (error) {
       return [];
     }
   }
+
   private getNewQuestions() {
     try {
       return this.questionnaires.getLast().questions.getArray();
@@ -204,6 +150,7 @@ export default class HomeCode extends Vue {
       return [];
     }
   }
+
   private getNewOptions() {
     try {
       return this.questionnaires.getLast().questions.getLast().options.getArray();
@@ -212,113 +159,58 @@ export default class HomeCode extends Vue {
     }
   }
 
-  private includeQuestionnaire(item: any) {
-    if (this.questionnairesOfEvent.getIndexById(item._id) == -1) {
-      this.questionnairesOfEvent.add(item);
+  private includeQuestionnaire(item: IQuestionnaire) {
+    let alreadyExists = false;
+    this.questionnairesOfEvent.forEach(q => {
+      if (q.id == item.id) {
+        alreadyExists = true;
+      }
+    })
+    if (!alreadyExists) {
+      this.questionnairesOfEvent.push(item);
     }
   }
+
   private removeQuestionnaire(item: any) {
-    this.questionnairesOfEvent.remove(this.questionnairesOfEvent.getIndexById(item._id));
+    let pos = this.questionnairesOfEvent.indexOf(item);
+    this.questionnairesOfEvent.splice(pos, 1);
   }
+
+  private closeDialog() {
+    this.wizard = 1;
+    this.dialogs.events = false;
+  }
+
+
+  // Functions Test
+
   private includeQuestion() {
   }
   private includeOption() {
   }
 
-  // Backend methods
-  private async getEvents() {
-    let data = {
-      token: this.userInfo.token,
-      joinEvent: {
-        idUser: this.userInfo.id,
-        idType: 1,
-      }
-    }
-    console.log('get Events ', data)
-    const getEvents: any = await this.backend.send('get:joinEvents', data);
-    Object.assign(this.events, getEvents.value)
+  private async selectEvent(item: any) {
+    // await this.questionnaireActions.getByEvent(item._id);
   }
 
-  // GET QUESTIONNAIRES
-  private async getQuestionnaires(idEvent: number) {
-    let data1 = {
-      token: this.userInfo.token,
-      questionnaire: {
-        idUser: this.userInfo.id,
-      }
-    }
-    const getQuestionnairesByIdUser: any = await this.backend.send('get:questionnaireByIdUser', data1);
-    this.questionnaires = new QuestionnaireList();
-    Object.assign(this.questionnaires, getQuestionnairesByIdUser.value);
-    let data = {
-      token: this.userInfo.token,
-      questionnaire: {
-        idEvent: idEvent,
-      }
-    }
-    const getQuestionnairesOfEvent: any = await this.backend.send('get:questionnaireByEventId', data);
-    Object.assign(this.questionnairesOfEvent, getQuestionnairesOfEvent.value);
+  private getActualDate() {
+    console.log(new Datetime().getFormattedDate())
+    return new Datetime().getFormattedDate();
   }
 
-  private async showEventDialog() {
-    let data1 = {
-      token: this.userInfo.token,
-      questionnaire: {
-        idUser: this.userInfo.id,
-      }
+  private filterItems() {
+    if (this.search.value == '') {
+      return this.events;
+    } else {
+      // filter
+      let filterKey = this.searchFilters[this.search.filter];
+      return this.events
+        .filter(
+          (pedido: any) =>
+            (pedido[filterKey] || '')
+              .toLowerCase()
+              .indexOf(this.search.value.toLowerCase()) != -1
+        );
     }
-    const getQuestionnairesByIdUser: any = await this.backend.send('get:questionnaireByIdUser', data1);
-    this.questionnaires = new QuestionnaireList();
-    Object.assign(this.questionnaires, getQuestionnairesByIdUser.value);
-    // clear
-    this.newEvent = new Event();
-    this.questionnairesOfEvent = new QuestionnaireList();
-    this.interactionsMode.events = 0; //mode add : 0
-    this.dialogs.events = true;
-  }
-
-  private async editEvent(item: any) {
-    this.newEvent = new Event();
-    Object.assign(this.newEvent, item);
-
-    // formatting date
-    let { start, end, created } = this.newEvent;
-    // DATETIME=> 2019-12-28T03:00:00.000Z | FILTER=>  28-12-2019 03:00:00
-    start = new Date().toISOString().substr(0, 10)
-    // console.log('filterd date: ', start)
-    // end = this.datetime.normalize(end);
-    // created = this.datetime.normalize(created);
-    this.newEvent.start = start;
-    // this.newEvent.end = end;
-    // this.newEvent.created = created;
-
-    await this.getQuestionnaires(item._id);
-    this.interactionsMode.events = 1; //mode edit : 1
-    this.dialogs.events = true;
-  }
-
-  private async deleteEvent(item: any) {
-    let data = {
-      token: this.userInfo.token,
-      event: {
-        id: item['_id'],
-      }
-    }
-    const resultDeleteEvent: any = await this.backend.send('delete:event', data);
-    if (resultDeleteEvent.statusCode == 200) {
-      const index = this.events.indexOf(item);
-      this.events.remove(index);
-    }
-    this.dialogs.deleteEvent = false;
-  }
-
-  private selectEvent(item: any) {
-    // this.getQuestionnaires(item.id)
-  }
-
-  @Watch("newEvent.startDate")
-  onStartDateChanged() {
-    console.log('cambia')
-    this.newEvent.end = "";
   }
 }

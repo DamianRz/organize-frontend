@@ -1,19 +1,18 @@
 <template v-cloak>
   <v-navigation-drawer
-    id="drawer-left" 
+    id="drawer-left"
     dark
-    temporary
     fixed
+    temporary
     left
     v-model="drawer"
     color="rgba(0, 0, 0, 0.6)"
   >
-    <!-- custom item list Reservation -->
-    <v-list-item @click="drawer=false;reservationDialog=true" class="list-item"> 
+    <!-- <v-list-item @click="drawer=false;reservationDialog=true" class="list-item">
       <v-list-item-content class="list-item-content">
         <v-list-item-title>RESERVAR</v-list-item-title>
       </v-list-item-content>
-    </v-list-item>
+    </v-list-item> -->
     <!-- list item of menu items  -->
     <v-list-item
       v-for="(item, index) in filteredConf"
@@ -40,18 +39,14 @@
 </template>
 
 <script lang="ts">
-// import Vuetify from "vuetify/lib";
-import {  Prop, Watch, Component } from "vue-property-decorator";
-import LeftMenuCode from "./leftMenuCode";
-import "./leftMenuStyle.scss";
-// import ReservationDialog from "../dialogs/ReservationDialog/ReservationDialog.vue";
+import { Prop, Watch, Component } from "vue-property-decorator";
+import LeftMenuView from "./LeftMenu.view";
+import "./LeftMenu.scss";
 
 @Component({
-  components: {
-    // ReservationDialog
-  }
+  components: {}
 })
-export default class LeftMenu extends LeftMenuCode {
-    @Prop({ default: false }) value!: boolean;
+export default class LeftMenu extends LeftMenuView {
+  @Prop({ default: false }) value!: boolean;
 }
 </script>

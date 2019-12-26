@@ -1,24 +1,81 @@
-
 <template>
   <div id="events">
-    <h2 class="font-title">Mis Eventos</h2>
+    <v-btn @click="showEventDialog()" depressed small fab color="green" dark right absolute>
+      <v-icon>add</v-icon>
+    </v-btn>
+
+    <div class="content-info">
+      <h2 class="font-title">Mis Eventos</h2>
+      <!-- <p>Todos tus eventos aqui</p> -->
+    </div>
+
+    <div class="search-box">
+      <div class="select">
+        <v-select
+          v-model="search.filter"
+          label="Buscar por"
+          :items="Object.keys(searchFilters)"
+          item-value="text"
+          defa
+        ></v-select>
+      </div>
+      <div class="field">
+        <v-text-field
+          v-model="search.value"
+          append-icon="search"
+          label="Buscar"
+          single-line
+          hide-details
+        ></v-text-field>
+      </div>
+    </div>
+
+
 
     <div class="tables-box">
       <div class="event-table-box">
-        <v-data-table
-          :v-model="events.getArray()"
+        <div class="event-container">
+          <div class="events-box">
+            <div class="event" v-for="(item,index) in filterItems()" :key="index">
+              <p class="name font-text">{{ item.name }}</p>
+              <p
+                class="date"
+              >{{ datetime.convert(datetime.getDate(item.startDate)) +' '+ item.startHour }}</p>
+
+              <v-icon class="icon-event">event</v-icon>
+              <v-btn small fab depressed class="icon-edit">
+                <v-icon @click="editEvent(item)" color="green">edit</v-icon>
+              </v-btn>
+              <v-btn small fab depressed class="icon-delete">
+                <v-icon @click="dialogs.deleteEvent = true" color="red">delete</v-icon>
+              </v-btn>
+            </div>
+
+            <p
+              class="message-table"
+              v-if="search.value != '' && filterItems().length == 0"
+            >No se encontraron resultados</p>
+            <p
+              class="message-table"
+              v-else-if="search.value == '' && filterItems().length == 0"
+            >No tiene eventos creados</p>
+          </div>
+        </div>
+
+        <!-- {{ newEvent }} -->
+        <!-- <v-data-table
+        dense
+          :v-model="events"
           :headers="headers"
-          :items="events.getArray()"
+          :items="events"
           :items-per-page="500"
           single-select
           item-key="name"
-          show-select
+          hide-default-header
           class="elevation-0"
           hide-default-footer
         >
-          <template v-slot:top>
-            <v-btn @click="showEventDialog()" color="green" dark right absolute small fab>+</v-btn>
-          </template>
+         
 
           <template v-slot:item.action="{ item }">
             <v-icon class="mr-3" @click="editEvent(item)">edit</v-icon>
@@ -29,7 +86,7 @@
               <v-btn color="red" text @click="deleteEvent(item)">Borrar</v-btn>
             </v-snackbar>
           </template>
-        </v-data-table>
+        </v-data-table>-->
       </div>
       <!-- <div class="map-box"></div> -->
     </div>
@@ -63,47 +120,45 @@
                       label="Lugar"
                     ></v-text-field>
 
+                    <!-- TimeFields -->
 
-                    {{ 'start date test '+ test }}
                     <time-field
-                      v-model="test"
+                      v-model="newEvent.startDate"
+                      :min="getActualDate()"
                       type="date"
-                      :error="v.get('newEvent.start') != ''"
-                      :errorMessage="v.get('newEvent.start')"
+                      :error="v.get('newEvent.startDate') != ''"
+                      :errorMessage="v.get('newEvent.startDate')"
                       label="Fecha de inicio"
                       lang="es"
                     ></time-field>
 
+                    <TimeField
+                      v-model="newEvent.endDate"
+                      type="date"
+                      :min="newEvent.startDate"
+                      :error="v.get('newEvent.endDate') != ''"
+                      :errorMessage="v.get('newEvent.endDate')"
+                      label="Fecha de finalizacion"
+                      lang="es"
+                    ></TimeField>
+
                     <time-field
                       type="hour"
-                      :v-model="newEvent.startHour"
-                      @time="(time)=> { newEvent.startHour = time }"
-                      :min="datetime.getHour()"
+                      v-model="newEvent.startHour"
+                      :min="newEvent.startHour"
                       :error="v.get('newEvent.startHour') != ''"
                       :errorMessage="v.get('newEvent.startHour')"
-                      label="Hora inicio"
-                      lang="es"
-                    ></time-field>
-
-                    <time-field
-                      type="date"
-                      :v-model="newEvent.end"
-                      @time="(time)=> { newEvent.end = time }"
-                      :min="newEvent.start"
-                      :error="v.get('newEvent.end') != ''"
-                      :errorMessage="v.get('newEvent.end')"
-                      label="Fecha fin"
+                      label="Hora de inicio"
                       lang="es"
                     ></time-field>
 
                     <time-field
                       type="hour"
-                      :v-model="newEvent.endHour"
-                      @time="(time)=> { newEvent.endHour = time }"
-                      :min="newEvent.startHour"
+                      v-model="newEvent.endHour"
+                      :min="newEvent.endHour"
                       :error="v.get('newEvent.endHour') != ''"
                       :errorMessage="v.get('newEvent.endHour')"
-                      label="Hora fin"
+                      label="Hora de finalizacion"
                       lang="es"
                     ></time-field>
 
@@ -113,6 +168,7 @@
                       :error-messages="v.get('newEvent.description')"
                       label="Descripcion"
                     ></v-text-field>
+
                     <v-text-field
                       v-model="newEvent.guestsNumber"
                       :error="v.get('newEvent.guestsNumber') != ''"
@@ -125,9 +181,9 @@
                     <div class="questionnaire-table-box">
                       <h3 class="font-title">Mis cuestionarios</h3>
                       <v-data-table
-                        :v-model="questionnaires.getArray()"
+                        :v-model="questionnaires"
                         :headers="headersQ"
-                        :items="questionnaires.getArray()"
+                        :items="questionnaires"
                         :items-per-page="5"
                         single-select
                         item-key="name"
@@ -142,9 +198,9 @@
                     <div class="questionnaire-table-box">
                       <h3 class="font-title">Cuestionarios asignados</h3>
                       <v-data-table
-                        :v-model="questionnairesOfEvent.getArray()"
+                        :v-model="questionnairesOfEvent"
                         :headers="headersQ"
-                        :items="questionnairesOfEvent.getArray()"
+                        :items="questionnairesOfEvent"
                         :items-per-page="5"
                         single-select
                         item-key="name"
@@ -168,7 +224,7 @@
                 text
                 small
                 class="footer-button"
-                @click.native="createEvent()"
+                @click.native="addEvent()"
               >Crear evento</v-btn>
 
               <v-btn
@@ -192,13 +248,13 @@
 import EventView from "./Event.view";
 import "../../styles/fonts.scss";
 import "./Event.scss";
-import CustomTable from "../../components/CustomTable.vue";
+// import CustomTable from "../../components/CustomTable.vue";
 import { Component, Vue } from "vue-property-decorator";
 import TimeField from "../../components/TimeField/TimeField.vue";
 
 @Component({
   components: {
-    CustomTable,
+    // CustomTable,
     TimeField
   }
 })

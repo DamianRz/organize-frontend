@@ -29,14 +29,13 @@
             ></v-text-field>
 
             <div class="footer">
-              <v-btn @click="signIn()" class="button" color="#bc7b3c">Acceder</v-btn>
+              <v-btn @click="signIn()" depressed class="button" color="#bc7b3c">Acceder</v-btn>
             </div>
 
             <div class="signup-button">
               <p>No tiene cuenta? Registrese aqui</p>
-              <v-btn @click="goToStep(2)" color="#bc7b3c">
+              <v-btn @click="goToStep(2)" depressed small color="#bc7b3c">
                 Registrase Aqui
-                <v-icon>people</v-icon>
               </v-btn>
             </div>
           </div>
@@ -90,10 +89,10 @@
             </div>
             <!-- <p class="font-error font-text">{{ signUpErrors }}</p> -->
             <div class="footer">
-              <v-btn small @click="goToStep(1)" color="#bc7b3c" class="mr-3">
-                <v-icon>arrow_back</v-icon>Volver
+              <v-btn depressed small @click="goToStep(1)" color="#645b54" dark fab class="mr-3">
+               <v-icon>arrow_back</v-icon>
               </v-btn>
-              <v-btn @click="signUp()" color="#bc7b3c" class="button">Registrarse</v-btn>
+              <v-btn @click="signUp()" depressed  color="#bc7b3c" dark class="button">Registrarse</v-btn>
             </div>
           </div>
         </v-stepper-content>

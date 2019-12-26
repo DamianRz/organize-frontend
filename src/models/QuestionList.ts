@@ -36,6 +36,6 @@ export default class QuestionList {
   }
 
   setLast(q: Question) {
-    Object.assign(this._questions[this.length()-1], q);
+    Object.assign(this._questions[this.length-1], q);
   }
 }

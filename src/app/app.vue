@@ -14,10 +14,10 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import Toolbar from "@/components/toolbar/toolbar.vue";
-import LeftMenu from "@/components/leftMenu/leftMenu.vue";
-import AppCode from "./appCode";
-import "./appStyle.scss";
+import Toolbar from "@/components/Toolbar/Toolbar.vue";
+import LeftMenu from "@/components/LeftMenu/LeftMenu.vue";
+import AppView from "./App.view";
+import "./App.scss";
 import vue from 'vue';
 
 @Component({
@@ -27,10 +27,9 @@ import vue from 'vue';
   }
 })
 
-export default class App extends AppCode {
+export default class App extends AppView {
     created() {
       this.init();
     }
-   
 }
 </script>

@@ -26,7 +26,7 @@ export default class EventList {
   }
 
   getArray() {
-    return this._events;
+    return (this._events || []);
   }
 
   getLast() {
@@ -41,7 +41,7 @@ export default class EventList {
   getIndexById(id: number) { 
     let pos = -1;
     for (let i = 0; i < this._events.length; i++) {
-      if (this._events[i]['_id'] == id) {
+      if (this._events[i]['id'] == id) {
         console.log(id, i)
         pos = i;
       }
@@ -50,7 +50,7 @@ export default class EventList {
   }
 
   removeById(id: number) {
-    this._events = this._events.filter(item => item['_id'] !== id);
+    this._events = this._events.filter(item => item['id'] !== id);
   }
 
   remove(index: number) {

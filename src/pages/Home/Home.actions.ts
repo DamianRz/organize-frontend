@@ -85,7 +85,8 @@ export default class HomeCode extends vue {
           console.log('id user ',result.value.id)
           let user = {
             id: result.value.id,
-            username: result.value.username
+            username: result.value.username,
+            logged: true
           }
           // save in the store the user data
           this['$store'].commit('userInfo', user)

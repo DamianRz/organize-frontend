@@ -12,7 +12,7 @@ export default class Event {
   private _description: string;
   private _guestsNumber: number;
   private _created: string;
-  private _state: number;
+  private _state: boolean;
 
   // private _questionnaires: QuestionnaireList;
 
@@ -27,7 +27,7 @@ export default class Event {
     this._description = "";
     this._guestsNumber = 0;
     this._created = "";
-    this._state = 0;
+    this._state = false;
 
     // this._questionnaires = new QuestionnaireList();
   }
@@ -60,20 +60,6 @@ export default class Event {
     this._start = start;
   }
 
-  get startHour(): string { 
-    return this._startHour;
-  }
-  set startHour(start: string) { 
-    this._startHour = start;
-  }
-
-  get endHour(): string { 
-    return this._endHour;
-  }
-  set endHour(end: string) { 
-    this._endHour = end;
-  }
-
   get end(): string { 
     return this._end;
   }
@@ -102,17 +88,10 @@ export default class Event {
     this._created = created;
   }
 
-  get state(): number { 
+  get state(): boolean { 
     return this._state;
   }
-  set state(state: number) { 
+  set state(state: boolean) { 
     this._state = state;
   }
-  
-  // get questionnaires(): QuestionnaireList { 
-  //   return this._questionnaires;
-  // }
-  // set questionnaires(qList: QuestionnaireList) { 
-  //   this._questionnaires = qList;
-  // }
 }

@@ -1,6 +1,5 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import main from "./main";
 import VuexPersistence from "vuex-persist";
 
 const vuexLocal = new VuexPersistence({
@@ -16,19 +15,20 @@ export const store = new Vuex.Store({
       id: undefined,
       token: undefined,
       username: undefined,
+      logged: false
     },
   },
   mutations: {
-    setLeftDrawer(state, value) {
+    setLeftDrawer(state: any, value) {
       state.drawer = value;
     },
-    userInfo(state, value) {
+    userInfo(state: any, value) {
       state.userInfo = value
     },
   },
   getters: {
     userInfo: state => state.userInfo,
-    userLogged: state => state.userInfo.id ? undefined : false,
+    userLogged: state => state.userInfo.logged,
     drawer: state => state.drawer,
   },
   plugins: [vuexLocal.plugin]
