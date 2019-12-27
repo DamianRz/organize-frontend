@@ -101,7 +101,6 @@ export default class TimeField extends TimeFieldCode {
   @Prop({ default: "date" }) type!: string;
   @Prop({ default: "es" }) lang!: string;
   @Prop({ default: "" }) label!: string;
-  // @Prop({ default: "" }) icon!: string;
   @Prop({ default: "" }) error!: string;
   @Prop({ default: "" }) min!: string;
   @Prop({ default: "" }) errorMessage!: string;
@@ -117,7 +116,12 @@ export default class TimeField extends TimeFieldCode {
   @Watch("value")
   updateValue() {
     if (this.time.indexOf(":") == -1) {
-      this.simpleDate = this.getDate(this.time);
+      if (this.value == "") {
+        this.simpleDate = "";
+        this.time = "";
+      } else {
+        this.simpleDate = this.getDate(this.time);
+      }
     }
   }
 
