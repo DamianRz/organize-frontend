@@ -1,21 +1,16 @@
-import { Vue, Watch } from 'vue-property-decorator';
+import { Vue } from 'vue-property-decorator';
 import EventActions from '@/actions/Event.actions';
 import QuestionnaireActions from '@/actions/Questionnaire.actions';
 import Validation from '@/utils/Validation';
 import UserStore from '@/types/UserStore';
-// import QuestionnaireList from '@/models/QuestionnaireList';
 import IEvent from '../../types/Event.type';
 import IQuestionnaire from '../../types/Questionnaire.type';
 import Datetime from '@/utils/DateTime';
 
 export default class HomeCode extends Vue {
-
   private userInfo: UserStore = this.$store.getters.userInfo;
-  // Actions Classes
-  //.............
   private eventActions: EventActions = new EventActions(this.userInfo);
   private questionnaireActions: QuestionnaireActions = new QuestionnaireActions(this.userInfo);
-  //.............
   private events: IEvent[] = [];
   private newEvent: IEvent = this.eventActions.baseEvent;
   private questionnaires: IQuestionnaire[] = [];
@@ -25,13 +20,15 @@ export default class HomeCode extends Vue {
   private wizard = 1;
   private dialogs = {
     events: false,
+    eventsQuestionnaires: false,
     deleteEvent: false
   }
 
-  private search: {filter: string, value: string} = {
+  private search: { filter: string, value: string } = {
     filter: '',
     value: ''
   }
+
   private searchFilters: any = {
     'nombre': 'name',
     'fecha de inicio': 'startDate'
@@ -63,28 +60,23 @@ export default class HomeCode extends Vue {
     ]
   }
 
-  private headers: any[] = [
-    { text: "Nombre", value: "name", },
-    // { text: "Lugar", value: "location", },
-    // { text: "Fecha Inicio", value: "startDate" },
-    // { text: "Hora", value: "startHour" },
-    { text: "Acciones", value: 'action' }
-  ];
-  private headersQ: any[] = [
-    { text: "Nombre", value: "name", },
-    { text: "Categoria", value: "category" },
-    { text: "Acciones", value: 'action' }
-  ];
+  // private headers: any[] = [
+  //   { text: "Nombre", value: "name", },
+  //   // { text: "Lugar", value: "location", },
+  //   // { text: "Fecha Inicio", value: "startDate" },
+  //   // { text: "Hora", value: "startHour" },
+  //   { text: "Acciones", value: 'action' }
+  // ];
+  // private headersQ: any[] = [
+  //   { text: "Nombre", value: "name", },
+  //   { text: "Categoria", value: "category" },
+  //   { text: "Acciones", value: 'action' }
+  // ];
 
-
-  // Functions
   async init() {
     this.events = (await this.eventActions.getAll() || this.events);
     this.questionnaires = (await this.questionnaireActions.getByUser() || this.questionnaires);
   }
-
-
-  // Actions  Functions
 
   private async addEvent() {
     if (this.v.validateFields(this.newEvent, [this.eventFields])) {
@@ -114,12 +106,21 @@ export default class HomeCode extends Vue {
     await this.questionnaireActions.getByEvent(idEvent);
   }
 
-  private async showEventDialog() {
-    this.questionnaires = (await this.questionnaireActions.getByUser() || []);
-    // reset vars
-    this.newEvent = this.eventActions.baseEvent;
-    this.questionnairesOfEvent = [];
-    this.interactionsMode.events = 0; //mode add : 0
+  private async showNewEvent() {
+    this.newEvent = {
+      id: -1,
+      name: '',
+      created: '',
+      description: '',
+      guestsNumber: 0,
+      location: '',
+      startDate: '',
+      startHour: '',
+      endDate: '',
+      endHour: '',
+      state: false
+    };
+    this.interactionsMode.events = 0;
     this.dialogs.events = true;
   }
 
@@ -127,11 +128,19 @@ export default class HomeCode extends Vue {
   private async editEvent(item: IEvent) {
     this.newEvent = this.eventActions.baseEvent;
     Object.assign(this.newEvent, item);
-
-    this.questionnairesOfEvent = (await this.questionnaireActions.getByEvent(item.id) || []);
-    console.log(this.questionnairesOfEvent)
+    // this.questionnairesOfEvent = (await this.questionnaireActions.getByEvent(item.id) || []);
+    // console.log(this.questionnairesOfEvent)
     this.interactionsMode.events = 1; //mode edit : 1
     this.dialogs.events = true;
+  }
+
+  private async editQuestionnairesOfEvent(item: IEvent) {
+    // this.newEvent = this.eventActions.baseEvent;
+    // Object.assign(this.newEvent, item);
+    this.questionnairesOfEvent = (await this.questionnaireActions.getByEvent(item.id) || []);
+    // console.log(this.questionnairesOfEvent)
+    // this.interactionsMode.events = 1; //mode edit : 1
+    this.dialogs.eventsQuestionnaires = true;
   }
 
 

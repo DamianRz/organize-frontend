@@ -52,7 +52,6 @@
     .event-table-box {
       position: relative;
       height: 100%;
-      // background-color: red;
 
       .event-container {
         position: relative;
@@ -64,21 +63,18 @@
           height: 480px;
           overflow-y: scroll;
           text-align: center;
-
           border-style: solid;
-          // border-bottom-style: solid;
           border-width: 1px;
           border-color: #e0e0e0;
           border-radius: 10px;
-          // background-color: #f8f8f8;
           padding: 10px;
 
           .event {
             position: relative;
             width: 100%;
             height: 100px;
-
-            background-color: white;
+            background-color: rgb(248, 243, 233);
+            color: rgb(49, 49, 49);
             border-style: solid;
             border-width: 2px;
             border-color: #dbdbdb;
@@ -89,18 +85,25 @@
             border-bottom-right-radius: 15px;
             padding-top: 10px;
 
+            .settings-box {
+              position: absolute;
+              top: 0px;
+              right: 10px;
+              font-size: 60px;
+            }
+
             .icon-event {
               position: absolute;
               top: 20px;
               left: 10px;
               font-size: 60px;
-              color: #cecece;
+              // color: #cecece;
             }
 
-            .icon-edit {
+            .status {
               position: absolute;
-              top: 5px;
-              right: 10px;
+              bottom:-15px;
+              left:10px;
             }
 
             .icon-delete {
@@ -121,7 +124,6 @@
           .message-table {
             margin-top: 50%;
             color: rgb(129, 129, 129);
-            
           }
         }
       }
@@ -147,22 +149,98 @@
   }
 }
 
+// Dialogs
 .event-dialog {
+  height: 100%;
+  background-color: white;
+  padding: 50px;
+
+  .fields-box {
+    text-align: center;
+    // padding-left: 50px;
+    // padding-right: 50px;
+    // background-color: green;
+
+    .questionnaires-box {
+      position: relative;
+      width: 100%;
+      height: 200px;
+      overflow-y: scroll;
+      text-align: center;
+      border-style: solid;
+      border-width: 1px;
+      border-color: #e0e0e0;
+      // background-color: red;
+      border-radius: 10px;
+      padding: 10px;
+      margin-top: 30px;
+      margin-bottom: 30px;
+
+      .questionnaire {
+        position: relative;
+        width: 100%;
+        height: 60px;
+        background-color: rgb(248, 243, 233);
+        color: rgb(49, 49, 49);
+        border-style: solid;
+        border-width: 2px;
+        border-color: #dbdbdb;
+        border-width: 1px;
+        text-align: center;
+        border-top-left-radius: 15px;
+        border-bottom-right-radius: 15px;
+        padding-top: 10px;
+
+        .name {
+          position: absolute;
+          top: 10px;
+          left: 10px;
+        }
+
+        .category {
+          position: absolute;
+          top: 30px;
+          left: 10px;
+          color: #7e7e7e;
+        }
+
+        .add-btn {
+          position: absolute;
+          top: 10px;
+          right: 10px;
+        }
+      }
+      .message-table {
+        margin-top: 30%;
+        color: rgb(129, 129, 129);
+      }
+    }
+  }
+
   .step-content {
     text-align: center;
+    background-color: #cecece;
+  }
+
+  .closeDialog {
+    position: absolute;
+    top: 0px;
+    left: 0px;
   }
 
   .step1-box {
     text-align: center;
-    display: flex;
+    padding: 20%;
+    // display: flex;
+    // background-color: aqua;
 
     .info-box {
-      width: 250px;
+      // background-color: gray;
     }
 
     .tables {
       padding: 20px;
-
+      background-color: red;
       .questionnaire-table-box {
         position: relative;
       }
@@ -171,11 +249,13 @@
 
   //FOOTER
   .footer-dialog {
-    position: relative;
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
     width: 100%;
     height: 60px;
-    padding-right: 20px;
-    margin-top: 50px;
+    padding: 20px;
+    // background-color: red;
 
     .footer-button {
       float: right;
