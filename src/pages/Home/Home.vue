@@ -29,12 +29,12 @@
             ></v-text-field>
 
             <div class="footer">
-              <v-btn @click="signIn()" depressed class="button" color="#bc7b3c">Acceder</v-btn>
+              <v-btn @click="signIn()" dark  depressed class="button" color="#bc7b3c">Acceder</v-btn>
             </div>
 
             <div class="signup-button">
               <p>No tiene cuenta? Registrese aqui</p>
-              <v-btn @click="goToStep(2)" depressed small color="#bc7b3c">
+              <v-btn @click="goToStep(2)" dark depressed small color="#bc7b3c">
                 Registrase Aqui
               </v-btn>
             </div>
