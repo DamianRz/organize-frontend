@@ -6,6 +6,13 @@ import Event from '../models/Event';
 import ResultObject from '@/models/ResultObject';
 import Datetime from '../utils/DateTime';
 
+import {
+  STATE_ACTIVE,
+  STATE_CANCELLED,
+  STATE_FINALIZED,
+  STATE_HIDE
+} from '../types/EventStates'
+
 export default class EventActions {
   private backend: any = new IntegrationBackend();
   private userInfo: IUserStore = {
@@ -46,23 +53,23 @@ export default class EventActions {
     if (response.statusCode == 200) {
       (response.value._events || []).map((e: Event) => {
         // for (let i = 0; i < 50; i++) {
-          let event: IEvent = {
-            id: e['_id'],
-            name: e['_name'],
-            created: e['_created'],
-            description: e['_description'],
+        let event: IEvent = {
+          id: e['_id'],
+          name: e['_name'],
+          created: e['_created'],
+          description: e['_description'],
 
-            startDate: new Datetime().getDate(e['_start']),
-            endDate: new Datetime().getDate(e['_end']),
+          startDate: new Datetime().getDate(e['_start']),
+          endDate: new Datetime().getDate(e['_end']),
 
-            startHour: new Datetime().getHour(e['_start']).substr(0, 5),
-            endHour: new Datetime().getHour(e['_end']).substr(0, 5),
+          startHour: new Datetime().getHour(e['_start']).substr(0, 5),
+          endHour: new Datetime().getHour(e['_end']).substr(0, 5),
 
-            guestsNumber: (e['_guestsNumber'] | 0),
-            location: e['_location'],
-            state: e['_state']
-          };
-          events.push(event);
+          guestsNumber: (e['_guestsNumber'] | 0),
+          location: e['_location'],
+          state: e['_state']
+        };
+        events.push(event);
 
         // }
       });
@@ -73,41 +80,40 @@ export default class EventActions {
   }
 
 
-
-  // ADD
   async add(event: IEvent, questionnaires: IQuestionnaire[]) {
     let data = {
       token: this.userInfo.token,
       event: {
         id: -1,
-        start: `${event.startDate} ${event.startHour}`,
-        end: `${event.endDate} ${event.endHour}`,
+        start: `${event.startDate} ${event.startHour}:00`,
+        end: `${event.endDate} ${event.endHour}:00`,
         name: event.name,
         location: event.location,
         description: event.description,
         guestsNumber: event.guestsNumber,
-        created: event.created,
-        state: true,
+        created: `${new Datetime().getFormattedDate()} ${new Datetime().getHour()}`,
+        state: STATE_HIDE,
       },
       joinEvent: {
         idUser: this.userInfo.id,
         idType: 1,
       }
     }
-
     const response: ResultObject = await this.backend.send('post:event', data);
     if (response.statusCode == 200) {
-      event.id = response.value.id;
-      // link event-questionnaires
-      this.linkQuestionnaires(questionnaires, event.id);
+      data.event.id = response.value.id;
       return Object.assign(event, data.event);
     } else {
       return null;
     }
   }
 
+
+
+
+
   // SAVE
-  async save(event: IEvent, questionnaires: IQuestionnaire[]) {
+  async save(event: IEvent) {
     let data = {
       token: this.userInfo.token,
       event: {
@@ -117,25 +123,30 @@ export default class EventActions {
         start: `${event.startDate} ${event.startHour}`,
         end: `${event.endDate} ${event.endHour}`,
         description: event.description,
-        guestsNumber: event.guestsNumber,
-        created: event.created,
-        state: true,
+        guestsNumber: parseInt(event.guestsNumber + ''),
+        state: event.state,
       },
       joinEvent: {
         idUser: this.userInfo.id,
         idType: 1,
       }
     }
-    const response: any = await this.backend.send('put:event', data);
+    console.log(data)
+
+    const response: ResultObject = await this.backend.send('put:event', data);
     if (response.statusCode == 200) {
-      // delete links event-questionnaire_option
-      this.removeLinksQuestionnaires(event.id);
-      // link event-questionnaires
-      this.linkQuestionnaires(questionnaires, data.event.id);
       return { statusCode: 200 };
     } else {
       return response;
     }
+  }
+
+
+
+
+  async saveQuestionnairesOfEvent(idEvent: number, questionnaires: IQuestionnaire[]) {
+    await this.removeLinksQuestionnaires(idEvent);
+    await this.linkQuestionnaires(questionnaires, idEvent);
   }
 
   // REMOVE
@@ -148,8 +159,6 @@ export default class EventActions {
     }
     const response: any = await this.backend.send('delete:event', data);
     if (response.statusCode == 200) {
-      // const index = this.events.indexOf(selectedEvent);
-      // this.events.remove(index);
       return { statusCode: 200 }
     } else {
       return response;
@@ -173,6 +182,8 @@ export default class EventActions {
     await this.backend.send('post:eventQuestionnaireOption', data);
   }
 
+
+
   // REMOVE-LINKS_QUESTIONNAIRES
   async removeLinksQuestionnaires(idEvent: number) {
     let data = {
@@ -182,5 +193,26 @@ export default class EventActions {
       }
     }
     const responseDeleteEventQO: any = await this.backend.send('delete:eventQuestionnaireOption', data);
+  }
+
+
+
+  getInfoByState(state: string): { text: string, color: string } {
+    switch (state) {
+      case STATE_ACTIVE:
+        return { text: 'activo', color: 'green' }
+        break;
+      case STATE_CANCELLED:
+        return { text: 'cancelado', color: 'yellow' }
+        break;
+      case STATE_FINALIZED:
+        return { text: 'finalizado', color: 'grey' }
+        break;
+      case STATE_HIDE:
+        return { text: 'oculto', color: 'silver' }
+        break;
+      default:
+        return { text: 'estado desconocido', color: 'red' }
+    }
   }
 }
