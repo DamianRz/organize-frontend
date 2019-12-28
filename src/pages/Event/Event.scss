@@ -63,21 +63,18 @@
           height: 480px;
           overflow-y: scroll;
           text-align: center;
-          border-style: solid;
           border-width: 1px;
           border-color: #e0e0e0;
-          border-radius: 10px;
-          padding: 10px;
+          padding-bottom: 10px;
 
           .event {
             position: relative;
             width: 100%;
             height: 100px;
-            background-color: rgb(248, 243, 233);
+            background-color: rgb(241, 241, 241);
             color: rgb(49, 49, 49);
-            border-style: solid;
             border-width: 2px;
-            border-color: #dbdbdb;
+            border-color: #fdc55c;
             border-width: 1px;
             text-align: center;
             margin-bottom: 20px;
@@ -90,7 +87,7 @@
               top: 0px;
               right: 10px;
               font-size: 60px;
-            }
+            } 
 
             .icon-event {
               position: absolute;
@@ -100,10 +97,12 @@
               // color: #cecece;
             }
 
-            .status {
+            .state {
               position: absolute;
-              bottom:-15px;
-              left:10px;
+              bottom:-10px;
+              left:20px;
+              font-size: 12px;
+              color: #7e7e7e;
             }
 
             .icon-delete {

@@ -8,7 +8,7 @@
       <h2 class="font-title">Mis Eventos</h2>
     </div>
 
-    <div class="search-box">
+    <div class="search-box" v-if="events.length">
       <div class="select">
         <v-select
           v-model="search.filter"
@@ -38,11 +38,11 @@
               <p
                 class="date"
               >{{ datetime.convert(datetime.getDate(item.startDate)) +' '+ item.startHour }}</p>
-
-              <!-- :color="getColorByStatus()" -->
-              <v-icon class="icon-event">event</v-icon>
-              <p class="status">{{ item.status ? 'Activo' : 'no activo' }}</p>
-
+              <v-icon
+                class="icon-event"
+                :color="eventActions.getInfoByState(item.state).color"
+              >event</v-icon>
+              <p class="state">{{ eventActions.getInfoByState(item.state).text }}</p>
               <div class="settings-box">
                 <v-btn small fab depressed text class="icon-edit">
                   <v-icon @click="editEvent(item)" color="green">edit</v-icon>
@@ -52,7 +52,7 @@
                 </v-btn>
               </div>
               <v-btn small fab depressed text class="icon-delete">
-                <v-icon @click="dialogs.deleteEvent = true" color="red">delete</v-icon>
+                <v-icon @click="removeEvent(item)" color="red">delete</v-icon>
               </v-btn>
             </div>
             <p
@@ -62,7 +62,7 @@
             <p
               class="message-table"
               v-else-if="search.value == '' && filterItems().length == 0"
-            >No tiene eventos creados</p>
+            >No tiene eventos creados. Pulse el buton superior derecho para crear</p>
           </div>
         </div>
 
@@ -95,7 +95,7 @@
       <!-- <div class="map-box"></div> -->
     </div>
 
-    <v-dialog v-model="dialogs.events" fullscreen persistent>
+    <v-dialog v-if="dialogs.events" v-model="dialogs.events" fullscreen persistent>
       <div class="event-dialog">
         <v-btn @click="closeDialog()" class="closeDialog" depressed fab text color="red" small>X</v-btn>
         <h2
@@ -128,7 +128,7 @@
           ></v-text-field>
           <time-field
             v-model="newEvent.startDate"
-            :min="getActualDate()"
+            :min="todayDate"
             type="date"
             :error="v.get('newEvent.startDate') != ''"
             :errorMessage="v.get('newEvent.startDate')"
@@ -183,6 +183,10 @@
       </div>
     </v-dialog>
 
+
+
+
+
     <v-dialog v-model="dialogs.eventsQuestionnaires" fullscreen persistent>
       <div class="event-dialog">
         <v-btn
@@ -215,11 +219,11 @@
             <p
               class="message-table"
               v-if="questionnaires.length == 0"
-            >No se tiene cuestionarios creados</p>
+            >No tienes cuestionarios creados. Acceda a menu->Cuestionarios para crear uno</p>
           </div>
         </div>
-        <p class="font-title">Cuestionarios Asignados</p>
-        <div class="fields-box">
+        <p class="font-title" v-if="questionnaires.length">Cuestionarios Asignados</p>
+        <div class="fields-box" v-if="questionnaires.length">
           <div class="questionnaires-box">
             <div class="questionnaire" v-for="(item,index) in questionnairesOfEvent" :key="index">
               <p class="name">{{ item.name }}</p>
@@ -243,7 +247,13 @@
           </div>
         </div>
         <div class="footer-dialog">
-          <v-btn text small class="footer-button" @click.native="saveEvent()">Guardar Cambios</v-btn>
+          <v-btn
+            v-if="questionnaires.length"
+            text
+            small
+            class="footer-button"
+            @click.native="saveQuestionnairesOfEvent()"
+          >Guardar Cambios</v-btn>
           <v-btn
             text
             small
@@ -253,6 +263,21 @@
         </div>
       </div>
     </v-dialog>
+
+
+
+
+
+
+
+
+    <v-dialog>
+      <v-btn @click="removeEvent(this.newEve)">Eliminar permanentemente</v-btn>
+    </v-dialog>
+
+    <v-snackbar v-model="notification.visible" :timeout="2000" :color="notification.color">
+      {{ notification.message }}
+    </v-snackbar>
   </div>
 </template>
  

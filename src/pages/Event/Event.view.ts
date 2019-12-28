@@ -6,6 +6,7 @@ import UserStore from '@/types/UserStore';
 import IEvent from '../../types/Event.type';
 import IQuestionnaire from '../../types/Questionnaire.type';
 import Datetime from '@/utils/DateTime';
+import ResultObject from '@/models/ResultObject';
 
 export default class HomeCode extends Vue {
   private userInfo: UserStore = this.$store.getters.userInfo;
@@ -23,7 +24,12 @@ export default class HomeCode extends Vue {
     eventsQuestionnaires: false,
     deleteEvent: false
   }
-
+  private notification = {
+    visible: false,
+    message: '',
+    color: 'green'
+  }
+  private todayDate: string = new Datetime().getFormattedDate();
   private search: { filter: string, value: string } = {
     filter: '',
     value: ''
@@ -80,26 +86,57 @@ export default class HomeCode extends Vue {
 
   private async addEvent() {
     if (this.v.validateFields(this.newEvent, [this.eventFields])) {
-      if (this.questionnairesOfEvent.length > 0) {
-        await this.eventActions.add(this.newEvent, this.questionnairesOfEvent);
-        this.dialogs.events = false;
+      let event = await this.eventActions.add(this.newEvent, this.questionnairesOfEvent);
+      if (event) {
+        this.events.push(event);
+        this.showNotificationSuccess('Evento creado con exito!');
       } else {
-        alert('debe tener como minimo un cuestionario asignado')
+        this.showNotificationSuccess('Ocurrio un error interno, vuelva a intentarlo');
       }
-
+      this.dialogs.events = false;
     }
   }
 
   private async saveEvent() {
     if (this.v.validateFields(this.newEvent, [this.eventFields])) {
-      await this.eventActions.save(this.newEvent, this.questionnairesOfEvent);
-      this.dialogs.events = false;
+      let response = await this.eventActions.save(this.newEvent);
+      if (response.statusCode == 200) {
+        let indexEvent = this.events.filter(event => event.id == this.newEvent.id)[0];
+        let pos = this.events.indexOf(indexEvent);
+        Object.assign(this.events[pos], this.newEvent);
+        this.dialogs.events = false;
+        this.showNotificationSuccess('Datos guardados con exito!');
+      } else {
+        this.showNotificationSuccess('Ocurrio un error interno, vuelva a intentarlo');
+        console.log(response)
+      }
     }
   }
 
-  private async deleteEvent(item: any) {
-    await this.eventActions.remove(item);
-    this.dialogs.deleteEvent = false;
+  private async saveQuestionnairesOfEvent() {
+    if (this.questionnairesOfEvent.length > 0) {
+      console.log(this.newEvent)
+      await this.eventActions.saveQuestionnairesOfEvent(this.newEvent.id, this.questionnairesOfEvent);
+      this.dialogs.eventsQuestionnaires = false;
+    } else {
+      alert('Debe tener como minimo un cuestionario asignado')
+    }
+  }
+
+  private async removeEvent(selectedEvent: IEvent) {
+    if (confirm('Esta seguro de que desea eliminar el evento ' + selectedEvent.name + '?')) {
+      const response = await this.eventActions.remove(selectedEvent);
+      if (response.statusCode == 200) {
+        let indexEvent = this.events.filter(event => event.id == selectedEvent.id)[0];
+        let pos = this.events.indexOf(indexEvent);
+        this.events.splice(pos, 1)
+        this.showNotificationSuccess('Evento eliminado correctamente')
+      } else {
+        this.showNotificationError('Ocurrio un error!')
+        console.log(response)
+      }
+      this.dialogs.deleteEvent = false;
+    }
   }
 
   private async getQuestionnairesx(idEvent: number) {
@@ -121,6 +158,7 @@ export default class HomeCode extends Vue {
       state: false
     };
     this.interactionsMode.events = 0;
+    this.questionnairesOfEvent = [];
     this.dialogs.events = true;
   }
 
@@ -134,13 +172,12 @@ export default class HomeCode extends Vue {
     this.dialogs.events = true;
   }
 
-  private async editQuestionnairesOfEvent(item: IEvent) {
-    // this.newEvent = this.eventActions.baseEvent;
-    // Object.assign(this.newEvent, item);
-    this.questionnairesOfEvent = (await this.questionnaireActions.getByEvent(item.id) || []);
-    // console.log(this.questionnairesOfEvent)
-    // this.interactionsMode.events = 1; //mode edit : 1
-    this.dialogs.eventsQuestionnaires = true;
+  private async editQuestionnairesOfEvent(selectedEvent: IEvent) {
+    console.log(selectedEvent)
+    if (selectedEvent.id != -1) {
+      this.questionnairesOfEvent = (await this.questionnaireActions.getByEvent(selectedEvent.id) || []);
+      this.dialogs.eventsQuestionnaires = true;
+    }
   }
 
 
@@ -203,7 +240,7 @@ export default class HomeCode extends Vue {
   }
 
   private getActualDate() {
-    console.log(new Datetime().getFormattedDate())
+    this.todayDate = new Datetime().getFormattedDate();
     return new Datetime().getFormattedDate();
   }
 
@@ -221,5 +258,18 @@ export default class HomeCode extends Vue {
               .indexOf(this.search.value.toLowerCase()) != -1
         );
     }
+  }
+
+
+  private showNotificationSuccess(message: string) {
+    this.notification.color = 'green';
+    this.notification.message = message;
+    this.notification.visible = true;
+  }
+
+  private showNotificationError(message: string) {
+    this.notification.color = 'red';
+    this.notification.message = message;
+    this.notification.visible = true;
   }
 }
