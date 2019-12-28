@@ -32,11 +32,19 @@ export default class Datetime {
 
 
   getHour(datetime?: string) { // datetime: 2019-11-26T03:00:00.000Z
+    let value = '';
     if (datetime) {
-      return datetime.split('T')[1].split('.')[0];
+      value = datetime.split('T')[1].split('.')[0];
     } else {
-      return new Date().toLocaleTimeString().split(' ')[0];
+      value = new Date().toLocaleTimeString().split(' ')[0];
     }
+
+    let hParts = value.split(':');
+    if(hParts[0].length == 1) {
+      hParts[0] = '0'+ hParts[0];
+    }
+
+    return `${hParts[0]}:${hParts[1]}:${hParts[2]}`;
   }
 
 
