@@ -5,7 +5,6 @@ import IUserStore from '@/types/UserStore';
 import Event from '../models/Event';
 import ResultObject from '@/models/ResultObject';
 import Datetime from '../utils/DateTime';
-
 import {
   STATE_ACTIVE,
   STATE_CANCELLED,
@@ -38,7 +37,6 @@ export default class EventActions {
     this.userInfo = userInfo;
   }
 
-  // GET
   async getAll() {
     let events: IEvent[] = [];
     let data = {
@@ -52,7 +50,6 @@ export default class EventActions {
     console.log(response.value)
     if (response.statusCode == 200) {
       (response.value._events || []).map((e: Event) => {
-        // for (let i = 0; i < 50; i++) {
         let event: IEvent = {
           id: e['_id'],
           name: e['_name'],
@@ -70,15 +67,12 @@ export default class EventActions {
           state: e['_state']
         };
         events.push(event);
-
-        // }
       });
       return events;
     } else {
       return null
     }
   }
-
 
   async add(event: IEvent, questionnaires: IQuestionnaire[]) {
     let data = {
@@ -108,11 +102,6 @@ export default class EventActions {
     }
   }
 
-
-
-
-
-  // SAVE
   async save(event: IEvent) {
     let data = {
       token: this.userInfo.token,
@@ -131,8 +120,6 @@ export default class EventActions {
         idType: 1,
       }
     }
-    console.log(data)
-
     const response: ResultObject = await this.backend.send('put:event', data);
     if (response.statusCode == 200) {
       return { statusCode: 200 };
@@ -141,15 +128,11 @@ export default class EventActions {
     }
   }
 
-
-
-
   async saveQuestionnairesOfEvent(idEvent: number, questionnaires: IQuestionnaire[]) {
     await this.removeLinksQuestionnaires(idEvent);
     await this.linkQuestionnaires(questionnaires, idEvent);
   }
 
-  // REMOVE
   async remove(selectedEvent: IEvent) {
     let data = {
       token: this.userInfo.token,
@@ -165,9 +148,6 @@ export default class EventActions {
     }
   }
 
-
-
-  // LINK_QUESTIONNAIRES
   async linkQuestionnaires(questionnaires: IQuestionnaire[], idEvent: number) {
     let data: any = {
       token: this.userInfo.token,
@@ -182,9 +162,6 @@ export default class EventActions {
     await this.backend.send('post:eventQuestionnaireOption', data);
   }
 
-
-
-  // REMOVE-LINKS_QUESTIONNAIRES
   async removeLinksQuestionnaires(idEvent: number) {
     let data = {
       token: this.userInfo.token,
@@ -194,8 +171,6 @@ export default class EventActions {
     }
     const responseDeleteEventQO: any = await this.backend.send('delete:eventQuestionnaireOption', data);
   }
-
-
 
   getInfoByState(state: string): { text: string, color: string } {
     switch (state) {

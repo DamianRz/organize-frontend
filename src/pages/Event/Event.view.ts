@@ -5,7 +5,6 @@ import Validation from '@/utils/Validation';
 import UserStore from '@/types/UserStore';
 import IEvent from '../../types/Event.type';
 import IQuestionnaire from '../../types/Questionnaire.type';
-import Datetime from '@/utils/DateTime';
 import ResultObject from '@/models/ResultObject';
 
 export default class HomeCode extends Vue {
@@ -16,9 +15,7 @@ export default class HomeCode extends Vue {
   private newEvent: IEvent = this.eventActions.baseEvent;
   private questionnaires: IQuestionnaire[] = [];
   private questionnairesOfEvent: IQuestionnaire[] = [];
-  private datetime: Datetime = new Datetime();
   private v: Validation = new Validation();
-  private wizard = 1;
   private dialogs = {
     events: false,
     eventsQuestionnaires: false,
@@ -27,23 +24,20 @@ export default class HomeCode extends Vue {
   private notification = {
     visible: false,
     message: '',
-    color: 'green'
+    color: 'green',
+    selectedItem: {}
   }
-  private todayDate: string = new Datetime().getFormattedDate();
   private search: { filter: string, value: string } = {
     filter: '',
     value: ''
   }
-
   private searchFilters: any = {
     'nombre': 'name',
     'fecha de inicio': 'startDate'
   }
-
   private interactionsMode = {
     events: 0
   }
-
   private eventFields = {
     objectName: 'newEvent',
     fields: [
@@ -54,10 +48,9 @@ export default class HomeCode extends Vue {
       ['startHour', 'string'],
       ['endHour', 'string'],
       ['description', 'string'],
-      ['guestsNumber', 'number'] // fix this!
+      ['guestsNumber', 'number']
     ]
   }
-
   private questionnaireFields = {
     objectName: 'newQuestionnaire',
     fields: [
@@ -66,22 +59,44 @@ export default class HomeCode extends Vue {
     ]
   }
 
-  // private headers: any[] = [
-  //   { text: "Nombre", value: "name", },
-  //   // { text: "Lugar", value: "location", },
-  //   // { text: "Fecha Inicio", value: "startDate" },
-  //   // { text: "Hora", value: "startHour" },
-  //   { text: "Acciones", value: 'action' }
-  // ];
-  // private headersQ: any[] = [
-  //   { text: "Nombre", value: "name", },
-  //   { text: "Categoria", value: "category" },
-  //   { text: "Acciones", value: 'action' }
-  // ];
-
   async init() {
     this.events = (await this.eventActions.getAll() || this.events);
     this.questionnaires = (await this.questionnaireActions.getByUser() || this.questionnaires);
+  }
+
+  private async showNewEvent() {
+    this.newEvent = {
+      id: -1,
+      name: '',
+      created: '',
+      description: '',
+      guestsNumber: 0,
+      location: '',
+      startDate: '',
+      startHour: '',
+      endDate: '',
+      endHour: '',
+      state: false
+    };
+    this.interactionsMode.events = 0;
+    this.questionnairesOfEvent = [];
+    this.dialogs.events = true;
+  }
+
+  private async editEvent(item: IEvent) {
+    this.newEvent = this.eventActions.baseEvent;
+    Object.assign(this.newEvent, item);
+    this.interactionsMode.events = 1;
+    this.dialogs.events = true;
+  }
+
+  private async editQuestionnairesOfEvent(selectedEvent: IEvent) {
+    console.log(selectedEvent)
+    if (selectedEvent.id != -1) {
+      this.questionnairesOfEvent = (await this.questionnaireActions
+        .getByEvent(selectedEvent.id) || []);
+      this.dialogs.eventsQuestionnaires = true;
+    }
   }
 
   private async addEvent() {
@@ -108,7 +123,6 @@ export default class HomeCode extends Vue {
         this.showNotificationSuccess('Datos guardados con exito!');
       } else {
         this.showNotificationSuccess('Ocurrio un error interno, vuelva a intentarlo');
-        console.log(response)
       }
     }
   }
@@ -116,7 +130,8 @@ export default class HomeCode extends Vue {
   private async saveQuestionnairesOfEvent() {
     if (this.questionnairesOfEvent.length > 0) {
       console.log(this.newEvent)
-      await this.eventActions.saveQuestionnairesOfEvent(this.newEvent.id, this.questionnairesOfEvent);
+      await this.eventActions
+        .saveQuestionnairesOfEvent(this.newEvent.id, this.questionnairesOfEvent);
       this.dialogs.eventsQuestionnaires = false;
     } else {
       alert('Debe tener como minimo un cuestionario asignado')
@@ -124,86 +139,21 @@ export default class HomeCode extends Vue {
   }
 
   private async removeEvent(selectedEvent: IEvent) {
-    if (confirm('Esta seguro de que desea eliminar el evento ' + selectedEvent.name + '?')) {
+    let filtredEvent = this.events.filter(event => event.id == selectedEvent.id)[0];
+    if (filtredEvent) {
       const response = await this.eventActions.remove(selectedEvent);
       if (response.statusCode == 200) {
-        let indexEvent = this.events.filter(event => event.id == selectedEvent.id)[0];
-        let pos = this.events.indexOf(indexEvent);
-        this.events.splice(pos, 1)
+        let indexEvent = this.events.indexOf(filtredEvent);
+        this.events.splice(indexEvent, 1)
         this.showNotificationSuccess('Evento eliminado correctamente')
+        this.notification.selectedItem = {};
       } else {
         this.showNotificationError('Ocurrio un error!')
-        console.log(response)
       }
-      this.dialogs.deleteEvent = false;
     }
+    this.dialogs.deleteEvent = false;
   }
 
-  private async getQuestionnairesx(idEvent: number) {
-    await this.questionnaireActions.getByEvent(idEvent);
-  }
-
-  private async showNewEvent() {
-    this.newEvent = {
-      id: -1,
-      name: '',
-      created: '',
-      description: '',
-      guestsNumber: 0,
-      location: '',
-      startDate: '',
-      startHour: '',
-      endDate: '',
-      endHour: '',
-      state: false
-    };
-    this.interactionsMode.events = 0;
-    this.questionnairesOfEvent = [];
-    this.dialogs.events = true;
-  }
-
-
-  private async editEvent(item: IEvent) {
-    this.newEvent = this.eventActions.baseEvent;
-    Object.assign(this.newEvent, item);
-    // this.questionnairesOfEvent = (await this.questionnaireActions.getByEvent(item.id) || []);
-    // console.log(this.questionnairesOfEvent)
-    this.interactionsMode.events = 1; //mode edit : 1
-    this.dialogs.events = true;
-  }
-
-  private async editQuestionnairesOfEvent(selectedEvent: IEvent) {
-    console.log(selectedEvent)
-    if (selectedEvent.id != -1) {
-      this.questionnairesOfEvent = (await this.questionnaireActions.getByEvent(selectedEvent.id) || []);
-      this.dialogs.eventsQuestionnaires = true;
-    }
-  }
-
-
-  private getNewQuestionnaires() {
-    try {
-      return this.questionnaires;
-    } catch (error) {
-      return [];
-    }
-  }
-
-  private getNewQuestions() {
-    try {
-      return this.questionnaires.getLast().questions.getArray();
-    } catch (error) {
-      return [];
-    }
-  }
-
-  private getNewOptions() {
-    try {
-      return this.questionnaires.getLast().questions.getLast().options.getArray();
-    } catch (error) {
-      return [];
-    }
-  }
 
   private includeQuestionnaire(item: IQuestionnaire) {
     let alreadyExists = false;
@@ -222,33 +172,10 @@ export default class HomeCode extends Vue {
     this.questionnairesOfEvent.splice(pos, 1);
   }
 
-  private closeDialog() {
-    this.wizard = 1;
-    this.dialogs.events = false;
-  }
-
-
-  // Functions Test
-
-  private includeQuestion() {
-  }
-  private includeOption() {
-  }
-
-  private async selectEvent(item: any) {
-    // await this.questionnaireActions.getByEvent(item._id);
-  }
-
-  private getActualDate() {
-    this.todayDate = new Datetime().getFormattedDate();
-    return new Datetime().getFormattedDate();
-  }
-
   private filterItems() {
     if (this.search.value == '') {
       return this.events;
     } else {
-      // filter
       let filterKey = this.searchFilters[this.search.filter];
       return this.events
         .filter(
@@ -260,7 +187,6 @@ export default class HomeCode extends Vue {
     }
   }
 
-
   private showNotificationSuccess(message: string) {
     this.notification.color = 'green';
     this.notification.message = message;
@@ -271,5 +197,17 @@ export default class HomeCode extends Vue {
     this.notification.color = 'red';
     this.notification.message = message;
     this.notification.visible = true;
+  }
+
+  private showNotificationDelete(selectedEvent: IEvent, message?: string) {
+    this.notification.selectedItem = selectedEvent;
+    this.notification.color = 'orange';
+    this.notification.message = (message || 'Esta seguro de eliminar el item seleccionado?');
+    this.notification.visible = true;
+  }
+
+  private closeNotification() {
+    this.notification.selectedItem = {};
+    this.notification.visible = false;
   }
 }

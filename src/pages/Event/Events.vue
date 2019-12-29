@@ -3,11 +3,9 @@
     <v-btn @click="showNewEvent()" depressed small fab color="green" dark right absolute>
       <v-icon>add</v-icon>
     </v-btn>
-
     <div class="content-info">
       <h2 class="font-title">Mis Eventos</h2>
     </div>
-
     <div class="search-box" v-if="events.length">
       <div class="select">
         <v-select
@@ -28,7 +26,6 @@
         ></v-text-field>
       </div>
     </div>
-
     <div class="tables-box">
       <div class="event-table-box">
         <div class="event-container">
@@ -52,7 +49,7 @@
                 </v-btn>
               </div>
               <v-btn small fab depressed text class="icon-delete">
-                <v-icon @click="removeEvent(item)" color="red">delete</v-icon>
+                <v-icon @click="showNotificationDelete(item)" color="red">delete</v-icon>
               </v-btn>
             </div>
             <p
@@ -65,39 +62,19 @@
             >No tiene eventos creados. Pulse el buton superior derecho para crear</p>
           </div>
         </div>
-
-        <!-- {{ newEvent }} -->
-        <!-- <v-data-table
-        dense
-          :v-model="events"
-          :headers="headers"
-          :items="events"
-          :items-per-page="500"
-          single-select
-          item-key="name"
-          hide-default-header
-          class="elevation-0"
-          hide-default-footer
-        >
-         
-
-          <template v-slot:item.action="{ item }">
-            <v-icon class="mr-3" @click="editEvent(item)">edit</v-icon>
-            <v-icon @click="dialogs.deleteEvent = true">delete</v-icon>
-            <v-snackbar v-model="dialogs.deleteEvent" vertical>
-              Esta seguro de borrar el evento seleccionado?
-              <v-btn text @click="dialogs.deleteEvent = false">Cancelar</v-btn>
-              <v-btn color="red" text @click="deleteEvent(item)">Borrar</v-btn>
-            </v-snackbar>
-          </template>
-        </v-data-table>-->
       </div>
-      <!-- <div class="map-box"></div> -->
     </div>
-
     <v-dialog v-if="dialogs.events" v-model="dialogs.events" fullscreen persistent>
       <div class="event-dialog">
-        <v-btn @click="closeDialog()" class="closeDialog" depressed fab text color="red" small>X</v-btn>
+        <v-btn
+          @click="dialogs.events = false"
+          class="closeDialog"
+          depressed
+          fab
+          text
+          color="red"
+          small
+        >X</v-btn>
         <h2
           class="font-title title-dialog"
         >{{ interactionsMode.events ? 'Editar evento' : 'Crear nuevo evento' }}</h2>
@@ -128,7 +105,7 @@
           ></v-text-field>
           <time-field
             v-model="newEvent.startDate"
-            :min="todayDate"
+            :min="datetime.getFormattedDate()"
             type="date"
             :error="v.get('newEvent.startDate') != ''"
             :errorMessage="v.get('newEvent.startDate')"
@@ -178,15 +155,10 @@
             class="footer-button"
             @click.native="saveEvent()"
           >Guardar cambios</v-btn>
-          <v-btn text small class="footer-button" @click.native="closeDialog()">cancelar</v-btn>
+          <v-btn text small class="footer-button" @click.native="dialogs.events = false">cancelar</v-btn>
         </div>
       </div>
     </v-dialog>
-
-
-
-
-
     <v-dialog v-model="dialogs.eventsQuestionnaires" fullscreen persistent>
       <div class="event-dialog">
         <v-btn
@@ -264,19 +236,24 @@
       </div>
     </v-dialog>
 
-
-
-
-
-
-
-
-    <v-dialog>
-      <v-btn @click="removeEvent(this.newEve)">Eliminar permanentemente</v-btn>
-    </v-dialog>
-
-    <v-snackbar v-model="notification.visible" :timeout="2000" :color="notification.color">
-      {{ notification.message }}
+    <v-snackbar v-model="notification.visible" :timeout="4000" :color="notification.color">
+      <p>{{ notification.message }}</p>
+      <v-btn
+        dark
+        depressed
+        color="red"
+        small
+        @click="removeEvent(notification.selectedItem)"
+        v-if="notification.color == 'orange'"
+      >Eliminar</v-btn>
+      <v-btn
+        dark
+        depressed
+        color="grey"
+        small
+        @click="closeNotification()"
+        v-if="notification.color == 'orange'"
+      >Cancelar</v-btn>
     </v-snackbar>
   </div>
 </template>
@@ -287,6 +264,7 @@ import "../../styles/fonts.scss";
 import "./Event.scss";
 import { Component, Vue } from "vue-property-decorator";
 import TimeField from "../../components/TimeField/TimeField.vue";
+import Datetime from "../../utils/DateTime";
 
 @Component({
   components: {
@@ -294,6 +272,7 @@ import TimeField from "../../components/TimeField/TimeField.vue";
   }
 })
 export default class EventsPage extends EventView {
+  private datetime: Datetime = new Datetime();
   created() {
     this.init();
   }
