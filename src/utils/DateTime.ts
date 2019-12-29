@@ -30,7 +30,6 @@ export default class Datetime {
     }
   }
 
-
   getHour(datetime?: string) { // datetime: 2019-11-26T03:00:00.000Z
     let value = '';
     if (datetime) {
