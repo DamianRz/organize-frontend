@@ -5,14 +5,14 @@ import Validation from '@/utils/Validation';
 import UserStore from '@/types/UserStore';
 import IEvent from '../../types/Event.type';
 import IQuestionnaire from '../../types/Questionnaire.type';
-import ResultObject from '@/models/ResultObject';
+import { BASE_EVENT } from '../../types/BaseObjects.types';
 
 export default class HomeCode extends Vue {
   private userInfo: UserStore = this.$store.getters.userInfo;
   private eventActions: EventActions = new EventActions(this.userInfo);
   private questionnaireActions: QuestionnaireActions = new QuestionnaireActions(this.userInfo);
   private events: IEvent[] = [];
-  private newEvent: IEvent = this.eventActions.baseEvent;
+  private newEvent: IEvent = BASE_EVENT;
   private questionnaires: IQuestionnaire[] = [];
   private questionnairesOfEvent: IQuestionnaire[] = [];
   private v: Validation = new Validation();
@@ -84,7 +84,7 @@ export default class HomeCode extends Vue {
   }
 
   private async editEvent(item: IEvent) {
-    this.newEvent = this.eventActions.baseEvent;
+    this.newEvent = BASE_EVENT;
     Object.assign(this.newEvent, item);
     this.interactionsMode.events = 1;
     this.dialogs.events = true;
