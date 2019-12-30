@@ -1,6 +1,6 @@
 import IOption from './Option.type';
 
-export default interface Question {
+export interface IQuestion {
   id: number,
   idType: number,
   name: string,
