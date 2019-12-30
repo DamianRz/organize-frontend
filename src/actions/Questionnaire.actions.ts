@@ -5,19 +5,11 @@ import IQuestion from '../types/Question.type';
 import IOption from '../types/Option.type';
 import Questionnaire from '../models/Questionnaire';
 import ResultObject from '@/models/ResultObject';
-
-// import QuestionnaireList from '@/models/QuestionnaireList';
-// import QuestionList from '@/models/QuestionList';
-// import Question from '../models/Question';
-// import Option from '../models/Option';
+import { BASE_USERSTORE } from '../types/BaseObjects.types';
 
 export default class QuestionnaireAction {
   private backend: any = new IntegrationBackend();
-  private userInfo: IUserStore = {
-    id: -1,
-    username: '',
-    token: ''
-  }
+  private userInfo: IUserStore = BASE_USERSTORE;
 
   constructor(userInfo: IUserStore) {
     this.userInfo = userInfo;
@@ -34,7 +26,6 @@ export default class QuestionnaireAction {
         questions: []
       }
     }
-    // add questions into the array
     questions.forEach((question: IQuestion) => {
       let qData: any = {
         idType: question.idType,
@@ -42,10 +33,6 @@ export default class QuestionnaireAction {
         category: question.category,
         options: []
       }
-      // add options into the array
-
-
-
       question.options.forEach((option: IOption) => {
         let oData: any = {
           name: option.name,
@@ -55,9 +42,8 @@ export default class QuestionnaireAction {
       });
       data.questionnaire.questions.push(qData);
     });
-
     const responsePostQuestionnaire: any = await this.backend.send('post:questionnaireFull', data);
-    console.log('response', responsePostQuestionnaire)
+    console.log(responsePostQuestionnaire)
     if (responsePostQuestionnaire.statusCode == 200) {
       data.questionnaire.id = responsePostQuestionnaire.value.id;
       return Object.assign(new Questionnaire(), data.questionnaire);
@@ -68,7 +54,46 @@ export default class QuestionnaireAction {
 
 
 
-  // GET_BY_USER
+
+
+  async addDeprecated(questionnaire: IQuestionnaire, questions: IQuestion[]) {
+    let data: any = {
+      token: this.userInfo.token,
+      questionnaire: {
+        id: -1,
+        idUser: this.userInfo.id,
+        name: questionnaire.name,
+        category: questionnaire.category,
+        questions: []
+      }
+    }
+    questions.forEach((question: IQuestion) => {
+      let qData: any = {
+        idType: question.idType,
+        name: question.name,
+        category: question.category,
+        options: []
+      }
+      question.options.forEach((option: IOption) => {
+        let oData: any = {
+          name: option.name,
+          cost: option.cost
+        }
+        qData.options.push(oData);
+      });
+      data.questionnaire.questions.push(qData);
+    });
+    const responsePostQuestionnaire: any = await this.backend.send('post:questionnaireFull', data);
+    if (responsePostQuestionnaire.statusCode == 200) {
+      data.questionnaire.id = responsePostQuestionnaire.value.id;
+      return Object.assign(new Questionnaire(), data.questionnaire);
+    } else {
+      return null;
+    }
+  }
+
+
+
   async getByUser() {
     let questionnaires: IQuestionnaire[] = [];
     let data = {
@@ -95,7 +120,6 @@ export default class QuestionnaireAction {
     }
   }
 
-  // GET_BY_EVENT
   async getByEvent(idEvent: number) {
     let questionnaires: IQuestionnaire[] = [];
     let data = {
@@ -120,5 +144,16 @@ export default class QuestionnaireAction {
     } else {
       return null;
     }
+  }
+
+  async saveQuestionsOfQuestionnaire(idQuestionnaire: number, questions: IQuestion[]) {
+  }
+
+  async remove(questionnaire: IQuestionnaire) {
+    return {statusCode: 200}
+  }
+
+  async save(questionnaire: IQuestionnaire) {
+    return {statusCode:200}
   }
 }
