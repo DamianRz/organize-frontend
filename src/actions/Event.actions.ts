@@ -11,27 +11,12 @@ import {
   STATE_FINALIZED,
   STATE_HIDE
 } from '../types/EventStates'
+import { BASE_USERSTORE } from '../types/BaseObjects.types';
+
 
 export default class EventActions {
   private backend: any = new IntegrationBackend();
-  private userInfo: IUserStore = {
-    id: -1,
-    username: '',
-    token: ''
-  }
-  public baseEvent: IEvent = {
-    id: -1,
-    name: '',
-    location: '',
-    startDate: '',
-    startHour: '',
-    endDate: '',
-    endHour: '',
-    description: '',
-    guestsNumber: 0,
-    created: '',
-    state: true,
-  }
+  private userInfo: IUserStore = BASE_USERSTORE;
 
   constructor(userInfo: IUserStore) {
     this.userInfo = userInfo;
