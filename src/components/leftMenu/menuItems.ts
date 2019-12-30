@@ -5,7 +5,7 @@ export default class MenuItems extends Vue {
   public menu: { options: any[] } = {
     options: [
       { name: "Eventos", icon: "", href: "", route: "/Events", toolbar: true },
-      { name: "Cuestionarios", icon: "", href: "", route: "/Questionnaires", toolbar: true },
+      { name: "Encuentas", icon: "", href: "", route: "/Questionnaires", toolbar: true },
       { name: "Buscar", icon: "", href: "", route: "", toolbar: true }
     ]
   };

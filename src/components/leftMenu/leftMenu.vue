@@ -17,7 +17,7 @@
     <v-list-item
       v-for="(item, index) in filteredConf"
       :key="index"
-      @click="drawer = false"
+      @click="pageRouter(item.route)"
       :href="item.href"
       class="list-item"
     >
