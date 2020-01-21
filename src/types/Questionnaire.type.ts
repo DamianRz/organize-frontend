@@ -1,4 +1,4 @@
-import IQuestion from '../types/Question.type';
+import {IQuestion} from '../types/Question.type';
 
 export default interface Questionnaire {
   id: number,
