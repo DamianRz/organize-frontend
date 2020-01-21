@@ -1,6 +1,6 @@
 import IUserStore from '../types/UserStore';
 import IntegrationBackend from '../utils/IntegrationBackend';
-import IQuestion from '../types/Question.type';
+import {IQuestion} from '../types/Question.type';
 import { BASE_USERSTORE } from '../types/BaseObjects.types';
 
 export default class QuestionActions {
