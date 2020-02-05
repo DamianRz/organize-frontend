@@ -307,7 +307,7 @@
  
 <script lang='ts'>
 import QuestionnaireView from "./Questionnaire.view";
-import "../../styles/fonts.scss";
+import "../../styles/Organize.scss";
 import "./Questionnaire.scss";
 import { Component, Vue } from "vue-property-decorator";
 import TimeField from "../../components/TimeField/TimeField.vue";

@@ -260,7 +260,7 @@
  
 <script lang='ts'>
 import EventView from "./Event.view";
-import "../../styles/fonts.scss";
+import "../../styles/Organize.scss";
 import "./Event.scss";
 import { Component, Vue } from "vue-property-decorator";
 import TimeField from "../../components/TimeField/TimeField.vue";
