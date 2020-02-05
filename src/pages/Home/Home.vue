@@ -1,114 +1,21 @@
 <template transition="slide-x-transition">
-  <div id="homePage">
-    <v-stepper v-model="wizard" class="stepper">
-      <v-stepper-items>
-        <v-stepper-content step="1">
-          <!-- SIGN IN -->
-          <v-img
-            class="back-img"
-            height="100%"
-            :aspect-ratio="16/9"
-            :src="require('../../assets/banner.jpg')"
-          ></v-img>
-          <div class="box-access">
-            <h4 class="font-title title">Acceda para utilizar Organize</h4>
-            <v-text-field
-              v-model="newUser.email"
-              :error="v.get('newUser.email') != ''"
-              :error-messages="v.get('newUser.email')"
-              class="field"
-              label="Email"
-            ></v-text-field>
-            <v-text-field
-              v-model="newUser.password"
-              :error="v.get('newUser.password') != ''"
-              :error-messages="v.get('newUser.password')"
-              class="field"
-              type="password"
-              label="Contraseña"
-            ></v-text-field>
-
-            <div class="footer">
-              <v-btn @click="signIn()" dark  depressed class="button" color="#bc7b3c">Acceder</v-btn>
-            </div>
-
-            <div class="signup-button">
-              <p>No tiene cuenta? Registrese aqui</p>
-              <v-btn @click="goToStep(2)" dark depressed small color="#bc7b3c">
-                Registrase Aqui
-              </v-btn>
-            </div>
-          </div>
-        </v-stepper-content>
-
-        <v-stepper-content step="2">
-          <!-- SIGN UP -->
-          <v-img
-            class="back-img"
-            height="100%"
-            :aspect-ratio="16/9"
-            :src="require('../../assets/banner.jpg')"
-          ></v-img>
-          <div class="box-access register-box">
-            <div class="login-fields">
-              <h4 class="font-title title">Registrese Aqui</h4>
-
-              <v-text-field
-                v-model="newUser.username"
-                :error="v.get('newUser.username') != ''"
-                :error-messages="v.get('newUser.username')"
-                class="field"
-                label="Nombre de Usuario"
-              ></v-text-field>
-
-              <v-text-field
-                v-model="newUser.email"
-                :error="v.get('newUser.email') != ''"
-                :error-messages="v.get('newUser.email')"
-                class="field"
-                label="Email"
-              ></v-text-field>
-
-              <v-text-field
-                v-model="newUser.password"
-                :error="v.get('newUser.password') != ''"
-                :error-messages="v.get('newUser.password')"
-                class="field"
-                label="Contraseña"
-                type="password"
-              ></v-text-field>
-
-              <v-text-field
-                v-model="newUser.password2"
-                :error="v.get('newUser.password2') != ''"
-                :error-messages="v.get('newUser.password2')"
-                class="field"
-                label="Repita contraseña"
-                type="password"
-              ></v-text-field>
-            </div>
-            <!-- <p class="font-error font-text">{{ signUpErrors }}</p> -->
-            <div class="footer">
-              <v-btn depressed small @click="goToStep(1)" color="#645b54" dark fab class="mr-3">
-               <v-icon>arrow_back</v-icon>
-              </v-btn>
-              <v-btn @click="signUp()" depressed  color="#bc7b3c" dark class="button">Registrarse</v-btn>
-            </div>
-          </div>
-        </v-stepper-content>
-      </v-stepper-items>
-    </v-stepper>
+  <div id="home-page">
+    <img class="img-back" src="https://i.pinimg.com/originals/9c/d1/a0/9cd1a09bb5c3d5a6774128147c96b18b.gif">
+    <login @onSignIn="signIn" @onSignUp="signUp" />
   </div>
 </template>
 
 <script lang="ts">
 import HomeActions from "./Home.actions";
 import "./Home.scss";
-import "../../styles/fonts.scss";
+import "../../styles/Organize.scss";
 import { Component } from "vue-property-decorator";
+import Login from "../../components/Login/Login.vue";
 
 @Component({
-  components: {}
+  components: {
+    Login
+  }
 })
 export default class Home extends HomeActions {}
 </script>
