@@ -1,0 +1,63 @@
+// v-text-field Style
+.organize__text-field {
+  ::selection {
+    background-color: #5c1349 !important;
+    color: white !important;
+  }
+  .primary--text {
+    color: #5c1349 !important;
+  }
+  .v-input__slot:before,
+  :after {
+    visibility: hidden;
+  }
+  .v-text-field__slot {
+    background-color: #d9d9d9;
+    border-radius: 20px;
+    label {
+      top: 3px;
+      margin-left: 20px;
+    }
+    label.v-label--active {
+      top: 0px;
+      padding-bottom: 40px !important;
+    }
+  }
+  input {
+    margin-left: 20px;
+    padding: 4px 0 4px !important;
+    color: rgb(24, 24, 24);
+  }
+  .text-field__internal-btn {
+    top: -10px;
+  }
+}
+
+.organize__button {
+  width: 100%;
+  border-radius: 20px;
+  text-transform: none;
+  font-style: normal;
+}
+
+// fonts Style
+.organize__font-title {
+  font-family: titling-gothic-fb-extended, sans-serif;
+  color: rgb(110, 110, 110);
+  font-weight: 300;
+  text-transform: none;
+}
+.organize__font-text {
+  font-family: "Inter beta", sans-serif;
+  color: #303030d5;
+  font-weight: 300;
+  text-transform: none;
+  box-shadow: 1px, 3px #ffffff4f;
+}
+.organize__font-error {
+  font-family: "Inter beta", sans-serif;
+  color: #ce3d3dd5;
+  font-weight: 300;
+  text-transform: none;
+  box-shadow: 1px, 3px #ffffff4f;
+}
