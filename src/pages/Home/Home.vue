@@ -1,7 +1,7 @@
 <template transition="slide-x-transition">
   <div id="home-page">
     <img class="img-back" src="https://i.pinimg.com/originals/9c/d1/a0/9cd1a09bb5c3d5a6774128147c96b18b.gif">
-    <login @onSignIn="signIn" @onSignUp="signUp" />
+    <login @onSignIn="(value)=>{signIn(value)}" @onSignUp="(value)=>{signUp(value)}"/>
   </div>
 </template>
 

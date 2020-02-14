@@ -21,15 +21,15 @@ export default class LoginActions extends vue {
   private disabledButtons: boolean = true;
 
   private fieldRules: any = [
-    (v: string) => (!!v && this.disabledButtons == true) || 'Este campo es requerido!'
-  ]
+    (fieldValue: string) => (!!fieldValue && this.disabledButtons == true) || 'Este campo es requerido!'
+  ];
   private passwordRules: any = [
-    (v: string) => (v === this.userSignUp.password) || 'Las contraseñas deben coincidir!!'
-  ]
+    (fieldValue: string) => (fieldValue === this.userSignUp.password) || 'Las contraseñas deben coincidir!!'
+  ];
   private emailRules: any = [ 
-    (v: string) => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'El email no es valido!',
-    (v: string) => (!!v && this.disabledButtons == true) || 'Este campo es requerido!'
-  ]
+    (fieldValue: string) => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(fieldValue) || 'El email no es valido!',
+    (fieldValue: string) => (!!fieldValue && this.disabledButtons == true) || 'Este campo es requerido!'
+  ];
 
   private userSignIn: IUserSignIn = {
     email: '',
@@ -56,8 +56,6 @@ export default class LoginActions extends vue {
     if (formSignUp.validate()) {
       if (this.userSignUp.password == this.userSignUp.repeatPassword) {
         this.$emit(this.ON_SIGNUP, this.userSignUp);
-      } else {
-
       }
     }
   }

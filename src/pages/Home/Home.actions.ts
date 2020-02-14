@@ -8,7 +8,7 @@ export default class HomeCode extends vue {
   private wizard = 1;
 
   async signUp(signUpUser: IUserSignUp) {
-    let userData = {
+    let userData = { 
       username: signUpUser.username,
       passwd: signUpUser.password,
       email: signUpUser.email
@@ -33,8 +33,9 @@ export default class HomeCode extends vue {
   async signIn(signInUser: IUserSignIn) {
     let data = {
       email: signInUser.email,
-      password: signInUser.password,
+      passwd: signInUser.password,
     }
+    console.log(data)
     try {
       const result: any = await this.backend.send('post:signIn', { user: data });
       if (result.statusCode === 200) {
@@ -49,6 +50,7 @@ export default class HomeCode extends vue {
         console.error(result);
       }
     } catch (error) {
+      console.log(error)
       alert('El usuario o la contraseña no son correctas');
     }
   }
