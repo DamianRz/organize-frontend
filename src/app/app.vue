@@ -9,6 +9,12 @@
       </v-container>
     </v-content>
     <v-footer app></v-footer>
+
+    <!-- <v-snackbar
+      v-model="notification.visible"
+      :color="notification.color"
+    >{{ notification.message }}</v-snackbar> -->
+
   </v-app>
 </template>
 
@@ -18,7 +24,7 @@ import Toolbar from "@/components/Toolbar/Toolbar.vue";
 import LeftMenu from "@/components/LeftMenu/LeftMenu.vue";
 import AppView from "./App.view";
 import "./App.scss";
-import vue from 'vue';
+import vue from "vue";
 
 @Component({
   components: {
@@ -26,10 +32,9 @@ import vue from 'vue';
     LeftMenu
   }
 })
-
 export default class App extends AppView {
-    created() {
-      this.init();
-    }
+  created() {
+    this.init();
+  }
 }
 </script>
