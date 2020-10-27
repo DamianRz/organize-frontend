@@ -39,17 +39,19 @@
         <span>{{ item.name }}</span>
       </v-btn>
     </v-toolbar-items>
-
   </v-toolbar>
 </template>
 
 <script lang="ts">
-import ToolbarAction from "./Toolbar.actions";
-import "./Toolbar.scss";
+import { ToolbarLogic } from "./index";
 import { Watch, Component } from "vue-property-decorator";
+import { LeftMenu } from "../leftMenu/leftMenu.vue";
+import "./Toolbar.scss";
 
 @Component({
-  components: {}
+  components: {
+    LeftMenu,
+  },
 })
-export default class Toolbar extends ToolbarAction {}
+export default class Toolbar extends ToolbarLogic {}
 </script>

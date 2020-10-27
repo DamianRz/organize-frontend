@@ -1,7 +1,11 @@
 
 import { Vue } from "vue-property-decorator";
 
-export default class AppCode extends Vue {
+export class AppCode extends Vue {
+    created() {
+        this.init();
+    }
+
     init() {
         let user = {
             id: -1,

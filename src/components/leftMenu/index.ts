@@ -1,10 +1,9 @@
+import { Vue } from 'vue-property-decorator';
 import MenuItems from './menuItems';
-import Component from 'vue-class-component';
 
-Component({})
-export default class LeftMenuView extends MenuItems {
+export class LeftMenuLogic extends Vue {
     private search: string = "";
-    private reservationDialog: boolean = false;
+    private MenuItems = new MenuItems();
 
     get drawer() {
         return this.$store.getters.drawer;
@@ -14,7 +13,7 @@ export default class LeftMenuView extends MenuItems {
     }
 
     get filteredConf() {
-        return this.menu.options.filter((option: any) => {
+        return this.MenuItems.menu.options.filter((option: any) => {
             return option.name.indexOf(this.search.toLowerCase()) >= 0;
         });
     }

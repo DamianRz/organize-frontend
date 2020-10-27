@@ -1,7 +1,6 @@
 <template>
   <v-app id="app">
     <Toolbar v-if="$store.state.userInfo" class="toolbar-app-fixed"></Toolbar>
-
     <LeftMenu class="left_menu-app-fixed"></LeftMenu>
     <v-content class="content">
       <v-container fluid class="container">
@@ -9,32 +8,5 @@
       </v-container>
     </v-content>
     <v-footer app></v-footer>
-
-    <!-- <v-snackbar
-      v-model="notification.visible"
-      :color="notification.color"
-    >{{ notification.message }}</v-snackbar> -->
-
   </v-app>
 </template>
-
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import Toolbar from "@/components/Toolbar/Toolbar.vue";
-import LeftMenu from "@/components/LeftMenu/LeftMenu.vue";
-import AppView from "./App.view";
-import "./App.scss";
-import vue from "vue";
-
-@Component({
-  components: {
-    Toolbar,
-    LeftMenu
-  }
-})
-export default class App extends AppView {
-  created() {
-    this.init();
-  }
-}
-</script>

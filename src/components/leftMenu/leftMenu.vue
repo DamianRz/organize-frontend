@@ -8,11 +8,6 @@
     v-model="drawer"
     color="rgba(0, 0, 0, 0.6)"
   >
-    <!-- <v-list-item @click="drawer=false;reservationDialog=true" class="list-item">
-      <v-list-item-content class="list-item-content">
-        <v-list-item-title>RESERVAR</v-list-item-title>
-      </v-list-item-content>
-    </v-list-item> -->
     <!-- list item of menu items  -->
     <v-list-item
       v-for="(item, index) in filteredConf"
@@ -22,9 +17,6 @@
       class="list-item"
     >
       <v-list-item-content class="list-item-content">
-        <!-- <v-list-item-avatar>
-          <v-icon color="#DDDDDD">{{ item.icon }}</v-icon>
-        </v-list-item-avatar>-->
         <v-list-item-title>{{ item.name }}</v-list-item-title>
       </v-list-item-content>
     </v-list-item>
@@ -40,13 +32,8 @@
 
 <script lang="ts">
 import { Prop, Watch, Component } from "vue-property-decorator";
-import LeftMenuView from "./LeftMenu.view";
+import { LeftMenuLogic } from "../leftMenu/index";
 import "./LeftMenu.scss";
 
-@Component({
-  components: {}
-})
-export default class LeftMenu extends LeftMenuView {
-  @Prop({ default: false }) value!: boolean;
-}
+export class LeftMenu extends LeftMenuLogic {}
 </script>
