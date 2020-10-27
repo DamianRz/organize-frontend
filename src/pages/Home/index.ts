@@ -1,14 +1,14 @@
-import vue from 'vue';
+import { Vue } from 'vue-property-decorator';
 import IntegrationBackend from '../../utils/IntegrationBackend';
-import { IUserSignIn, IUserSignUp } from '../../components/Login/Login.actions'
+import { IUserSignIn, IUserSignUp } from '../../components/Login'
 
-export default class HomeCode extends vue {
-  
+export class HomeLogic extends Vue {
+
   private backend: IntegrationBackend = new IntegrationBackend();
   private wizard = 1;
 
   async signUp(signUpUser: IUserSignUp) {
-    let userData = { 
+    let userData = {
       username: signUpUser.username,
       passwd: signUpUser.password,
       email: signUpUser.email

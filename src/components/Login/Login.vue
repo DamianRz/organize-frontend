@@ -1,6 +1,6 @@
 <template>
   <div id="login-box">
-    <h1 class="mb-6 organize__font-title">Login</h1>
+    <h1 class="mb-3 organize__font-title">Accede a WeCollab</h1>
     <v-form :ref="ON_SIGNIN">
       <v-text-field
         v-model="userSignIn.email"
@@ -25,7 +25,7 @@
                 v-on="on"
                 class="text-field__internal-btn"
                 dark
-                color="#B6158C"
+                color="#999"
                 small
                 fab
                 depressed
@@ -39,7 +39,7 @@
       </v-text-field>
     </v-form>
 
-    <h2 class="mb-6 organize__font-title">registrese aqui</h2>
+    <h2 class="mb-6 organize__font-title">Registrese aqui</h2>
 
     <v-form :ref="ON_SIGNUP">
       <v-text-field
@@ -73,16 +73,23 @@
         type="password"
         dense
       />
-      <v-btn @click="signUp()" class="mt-4 organize__button" dark color="#B6158C" depressed>Registrarse</v-btn>
+      <v-btn
+        @click="signUp()"
+        class="mt-4 organize__button"
+        dark
+        color="#999"
+        depressed
+        >Registrarse</v-btn
+      >
     </v-form>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop } from "vue-property-decorator";
-import LoginActions from "./Login.actions";
+import { Component } from "vue-property-decorator";
+import { LoginLogic } from "./index";
 import "./Login.scss";
 
 @Component({})
-export default class Login extends LoginActions {}
+export default class Login extends LoginLogic {}
 </script>

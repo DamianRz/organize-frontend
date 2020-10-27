@@ -1,7 +1,7 @@
 
 import { Vue } from "vue-property-decorator";
 
-export class AppCode extends Vue {
+export class AppLogic extends Vue {
     created() {
         this.init();
     }

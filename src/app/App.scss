@@ -1,14 +1,23 @@
+html {
+    padding: 0 !important;
+    margin: 0;
+}
+
+body {
+    padding: 0 !important;
+    margin: 0;
+}
+
 #app {
     .toolbar-app-fixed {
         position: fixed;
         z-index: 2;
     }
-    
+
     .left_menu-app-fixed {
         position: fixed;
-        // margin-top:65px;
     }
-    
+
     .container {
         padding: 0 !important;
     }

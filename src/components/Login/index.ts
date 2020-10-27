@@ -1,5 +1,5 @@
-import vue from 'vue';
-export type VForm = vue & { validate: () => boolean }
+import { Vue } from 'vue-property-decorator';
+export type VForm = Vue & { validate: () => boolean }
 
 export interface IUserSignIn {
   email: string,
@@ -13,7 +13,7 @@ export interface IUserSignUp {
   repeatPassword: string
 }
 
-export default class LoginActions extends vue {
+export class LoginLogic extends Vue {
 
   private ON_SIGNIN: string = 'onSignIn';
   private ON_SIGNUP: string = 'onSignUp';
@@ -26,7 +26,7 @@ export default class LoginActions extends vue {
   private passwordRules: any = [
     (fieldValue: string) => (fieldValue === this.userSignUp.password) || 'Las contraseñas deben coincidir!!'
   ];
-  private emailRules: any = [ 
+  private emailRules: any = [
     (fieldValue: string) => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(fieldValue) || 'El email no es valido!',
     (fieldValue: string) => (!!fieldValue && this.disabledButtons == true) || 'Este campo es requerido!'
   ];

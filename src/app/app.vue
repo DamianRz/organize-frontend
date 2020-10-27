@@ -10,3 +10,11 @@
     <v-footer app></v-footer>
   </v-app>
 </template>
+
+<script lang="ts">
+import { Component } from "vue-property-decorator";
+import { AppLogic } from "./index";
+import "./app.scss";
+@Component({})
+export default class App extends AppLogic {}
+</script>
