@@ -16,27 +16,18 @@
         label="constraseña"
         type="password"
         dense
+      />
+
+      <v-btn
+        @click="signIn()"
+        class="text-field__internal-btn"
+        dark
+        color="#999"
+        small
+        depressed
       >
-        <template v-slot:append-outer>
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-              <v-btn
-                @click="signIn()"
-                v-on="on"
-                class="text-field__internal-btn"
-                dark
-                color="#999"
-                small
-                fab
-                depressed
-              >
-                <v-icon>arrow_right</v-icon>
-              </v-btn>
-            </template>
-            <span>Accede Aqui</span>
-          </v-tooltip>
-        </template>
-      </v-text-field>
+        Acceder
+      </v-btn>
     </v-form>
 
     <h2 class="mb-6 organize__font-title">Registrese aqui</h2>
@@ -75,12 +66,14 @@
       />
       <v-btn
         @click="signUp()"
-        class="mt-4 organize__button"
+        class="text-field__internal-btn"
         dark
         color="#999"
+        small
         depressed
-        >Registrarse</v-btn
       >
+        Registrarse
+      </v-btn>
     </v-form>
   </div>
 </template>
