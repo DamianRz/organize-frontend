@@ -1,0 +1,1 @@
+export type HEADER = { text: string; value: string }

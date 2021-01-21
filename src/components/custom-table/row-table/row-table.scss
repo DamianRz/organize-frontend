@@ -1,0 +1,7 @@
+@import '../../../theme/colors.scss';
+
+.selected {
+    p {
+        color: $warm-color !important;
+    }
+}

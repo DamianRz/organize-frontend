@@ -1,7 +1,7 @@
 $primary: #d8d7d7;
 $p_light:rgb(167, 167, 167);
 $p_light: rgb(218, 218, 218);
-$p_dark: rgb(0, 0, 0); //'#000'
+$p_dark: rgb(15, 15, 15); //'#000'
 
 $secondary:#a5a262;
 $s_light: #c3bf6f;
@@ -13,11 +13,6 @@ $text_light: rgb(240, 240, 240);
 $text_dark: black;
 $text_error: rgb(255, 116, 116);
 
-
-
-
-
-
 /* light theme colors */
 $primary-light: #d8d7d7;
 $secondary-light: rgb(167, 167, 167);
@@ -28,7 +23,7 @@ $warm-color: #a5a262;
 $cool-color: #c3bf6f;
 
 /* shadows */
-$shadow-color: #292929;
+$shadow-color: #161616e0;
 $shadow-dark: rgba(0, 0, 0, 0.801);
 $shadow-light: rgba(238, 238, 238, 0.9);
 

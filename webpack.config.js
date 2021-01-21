@@ -1,53 +1,25 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCSSExtractPlugin = require('mini-css-extract-plugin');
+var path = require("path");
 
 module.exports = {
-   entry: './src/index.tsx',
-   output: {
-     path: path.join(__dirname, 'dist/'),
-     publicPath: '/',
-     filename: 'bundle.js'
+  entry: "./src",
+  output: {
+    path: __dirname + "/src",
+    filename: "bundle.js",
   },
   resolve: {
-    extensions: ['.ts', '.tsx', '.js']
+    extensions: ["", ".js", ".jsx"],
   },
   module: {
-    rules: [
+    loaders: [
       {
-        test: /\.tsx?$/,
-        use: {
-          loader: "babel-loader"
-        }
+        test: /\.jsx?$/,
+        loader: "babel",
+        exclude: /node_modules/,
+        query: {
+          cacheDirectory: true,
+          presets: ["react", "es2015"],
+        },
       },
-      { 
-        test: /\.scss$/, 
-        loader: [
-          MiniCSSExtractPlugin.loader,
-          "css-loader",
-          'sass-loader'
-        ]
-      }
-    ]
+    ],
   },
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: './public/index.html'
-    }),
-    new MiniCSSExtractPlugin()
-  ]
-} 
-
-
-
-// {
-//   test: /\.js$/,
-//   use: {
-//       loader: "babel-loader",
-//       options: {
-//           plugins: [
-//               "@babel/plugin-syntax-dynamic-import"
-//           ]
-//       }
-//   }
-// }
+};

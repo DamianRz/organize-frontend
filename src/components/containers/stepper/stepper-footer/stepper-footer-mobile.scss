@@ -1,0 +1,19 @@
+@import '../../../../theme/screen-size.scss';
+
+@media only screen and (max-width: 400px) {
+    .footer {
+        margin-bottom: 0px;
+    }
+}
+
+@media only screen and (max-width: $size-sm) {
+    .footer {
+        width: 100%;
+
+        .footer_right-box {
+            margin-left: 0;
+            margin: auto !important;
+            margin-right: 0;
+        }
+    }
+}

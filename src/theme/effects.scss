@@ -1,0 +1,110 @@
+@mixin effect-slide($to, $origin, $seconds) {
+    @keyframes slide_#{$to} {
+        0% {
+            #{$to}: calc(#{$origin} * -1);
+        }
+
+        100% {
+            #{$to}: 0;
+        }
+    }
+
+    animation-name: slide_#{$to};
+    animation-duration: $seconds;
+}
+
+
+@mixin effect-appear($seconds) {
+    @keyframes appear {
+
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+
+    animation-name: appear;
+    animation-duration: $seconds;
+}
+
+@mixin effect-hide($seconds) {
+    @keyframes hide {
+        from {
+            opacity: 1;
+        }
+
+        to {
+            opacity: 0;
+        }
+    }
+
+    animation-name: hide;
+    animation-duration: $seconds;
+}
+
+
+@mixin effect-rotate($seconds, $loop_count, $delay) {
+
+    @keyframes rotation {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    animation-name: rotation;
+    animation-delay: $delay;
+    animation-duration: $seconds;
+    animation-iteration-count: $loop_count;
+}
+
+
+@mixin image-scale($seconds, $loop_count) {
+    @keyframes scale {
+        0% {
+            background-size: 120%;
+        }
+
+        50% {
+            background-size: 150%;
+        }
+
+        100% {
+            background-size: 120%;
+        }
+    }
+
+    animation-name: scale;
+    animation-duration: $seconds;
+    animation-iteration-count: $loop_count;
+}
+
+
+
+/* animation mixing
+keyframe animation
+@include animation('animation-name .4s 1')*/
+
+@mixin animation($animate...) {
+    $max: length($animate);
+    $animations: '';
+
+    @for $i from 1 through $max {
+        $animations: #{$animations + nth($animate, $i)};
+
+        @if $i < $max {
+            $animations: #{$animations + ", "};
+        }
+    }
+
+    -webkit-animation: $animations;
+    -moz-animation: $animations;
+    -o-animation: $animations;
+    animation: $animations;
+}

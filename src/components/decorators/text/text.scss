@@ -1,0 +1,49 @@
+@import '../../../theme/colors.scss';
+@import '../../../theme/fonts.scss';
+
+.dmz-text {
+    padding: 0;
+    margin: 0;
+    // betther lecture
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-font-smoothing: antialiased !important;
+    text-rendering: optimizelegibility !important;
+    letter-spacing: .03em;
+}
+
+.theme-title {
+    font-size: calc(#{$f2} + .1vw);
+    color: $secondary;
+}
+
+.theme-subtitle {
+    font-size: calc(#{$f3} + .1vw);
+    color: $secondary;
+}
+
+.theme-text {
+    font-size: calc(#{$f5} + .2vw);
+}
+
+.theme-small {
+    font-size: calc(#{$f6} + .2vw);
+}
+
+.theme-text.dark,
+.theme-small.dark {
+    color: $text_light;
+}
+
+.theme-text.light,
+.theme-small.light {
+    color: $text_dark;
+}
+
+.primary {
+    color: $cool-color !important;
+}
+
+.secondary {
+    color: $warm-color !important;
+}

@@ -1,0 +1,17 @@
+@import '../../../theme/colors.scss';
+@import '../../../theme/screen-size.scss';
+
+$stepper-height: 640px;
+$step-height: calc(#{$stepper-height} - #{$toolbar-height}*2);
+
+.reserve-stepper {
+    .step {
+        /* remove header and footer of the stepper parent*/
+        height: $step-height;
+
+        .content {
+            overflow-y: scroll;
+            height: calc(#{$step-height} - 96px);
+        }
+    }
+}

@@ -1,0 +1,213 @@
+@import '../../../../theme/effects.scss';
+@import '../../../../theme/colors.scss';
+
+.barber-card {
+    width: 100%;
+    height: max-content;
+
+    .barber-step {
+        width: 80% !important;
+
+        .barber-item {
+            .barber-name {
+                margin-bottom: 20px;
+            }
+        }
+
+        .barber-img {
+            margin: auto;
+            border-radius: 20px;
+            width: 450px;
+            height: 600px;
+        }
+
+
+        .employee-social {
+            width: 100%;
+            bottom: 0px;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+            text-align: center;
+            padding: 10px 0;
+
+            .employee-social-logo {
+                position: relative;
+                display: inline-block;
+                width: 30px;
+                height: 30px;
+                margin: 0 20px 0 20px;
+                color: rgb(146, 144, 108);
+                border-radius: 50%;
+            }
+
+            .employee-social-logo:hover {
+                box-shadow: 0px 0px 30px 0px $warm-color;
+            }
+        }
+    }
+}
+
+
+
+
+
+
+//     // barbers items
+//     .barbers-items {
+//         width: max-content;
+//         height: max-content;
+//         text-align: center;
+//         border-right-style: solid;
+//         border-color: $warm-color;
+//         border-width: 1px;
+
+//         .help-action {
+//             position: absolute;
+//             text-transform: uppercase;
+//             color: $cool-color;
+//             writing-mode: vertical-lr;
+//             left: 150px;
+//             top: 40%;
+//         }
+
+//         .selected {
+//             .barber-item {
+//                 .barber-img {
+//                     filter: grayscale(0);
+//                     transition: all 1s ease-out;
+//                 }
+
+//                 .barber-name {
+//                     // color: $cool-color;
+//                 }
+//             }
+//         }
+
+//         .barber-item {
+//             position: relative;
+//             width: 30%;
+//             margin: 40px 20px 0 20px;
+//             display: inline-table;
+//             text-align: center;
+
+//             .barber-img {
+//                 position: relative;
+//                 width: 100px;
+//                 height: 100px;
+//                 border-radius: 50%;
+//                 filter: grayscale(1);
+//             }
+
+//             .barber-name {
+//                 margin-bottom: 20px;
+//             }
+
+//             .barber-url {
+//                 position: absolute;
+//                 bottom: 0px;
+//                 margin-left: 40%;
+//             }
+//         }
+
+//         .barber-item:hover {
+//             .barber-img {
+//                 filter: grayscale(0);
+//                 transition: all 500ms ease-out;
+//             }
+
+//             .barber-name {
+//                 color: $cool-color;
+//             }
+//         }
+//     }
+
+//     .barber-container {
+//         .info {
+//             color: white;
+//         }
+//     }
+
+//     // image and info
+//     .barber-info {
+//         width: 100%;
+//         height: max-content;
+//         text-align: center;
+
+//         .selected-img {
+//             max-width: 250px;
+//         }
+//     }
+// }
+
+
+
+// // IPHONE5/SE
+// @media only screen and (max-width: $mobile-screen) {
+//     .barber-card {
+
+//         // MOBILE STYLE OF CONTAINER-PAGE
+//         .container-barber {
+//             width: 100%;
+//             display: unset;
+
+//             .left-box {
+//                 width: 100%;
+
+//                 .help-action {
+//                     visibility: hidden;
+//                 }
+
+//                 .barbers-items {
+//                     position: relative;
+//                     width: 100%;
+//                     display: flex;
+//                     margin: auto;
+//                     border-style: none;
+//                     width: max-content;
+
+//                     .barber-item {
+//                         margin-left: 0px;
+//                         margin-right: 0px;
+
+//                         .barber-img {
+//                             width: 60px;
+//                             height: 60px;
+//                         }
+//                     }
+//                 }
+//             }
+
+//             .right-box {
+//                 visibility: hidden;
+//             }
+
+//             .containers {
+//                 display: inline;
+//                 margin: auto;
+
+//                 .sub-container {
+//                     width: 70% !important;
+//                     margin: auto;
+
+//                     .selected-img {
+//                         min-width: 450px;
+//                     }
+
+//                     .img-box {
+//                         .image {
+//                             margin: auto;
+
+//                             img {
+//                                 width: 100%;
+//                             }
+//                         }
+//                     }
+
+//                     .title {
+//                         text-align: center;
+//                     }
+//                 }
+//             }
+//         }
+//     }
+// }

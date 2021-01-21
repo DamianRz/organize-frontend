@@ -1,0 +1,15 @@
+.success-box {
+    margin: auto;
+    text-align: center;
+
+    .logo {
+        opacity: 0.1;
+        display: flex;
+        align-items: center;
+
+        img {
+            height: auto;
+            margin: auto;
+        }
+    }
+}

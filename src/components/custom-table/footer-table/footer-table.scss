@@ -1,0 +1,30 @@
+@import '../../../theme/colors.scss';
+
+.table-footer {
+    position: relative;
+    width: 100%;
+    height: max-content;
+    padding: 10px 10px;
+    border-top-style: solid;
+    border-width: 1px;
+    border-color: $warm-color;
+    border-color: rgba(153, 153, 153, 0.5);
+    display: flex;
+    align-items: center;
+
+    .left-box {
+        display: flex;
+    }
+
+    .pagination-box {
+        display: flex;
+        align-items: center;
+        width: max-content;
+        margin-right: 40px;
+        margin-left: auto;
+
+        .value {
+            margin-left: 10px;
+        }
+    }
+}

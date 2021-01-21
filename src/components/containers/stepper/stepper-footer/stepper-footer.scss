@@ -1,0 +1,22 @@
+@import '../../../../theme/screen-size.scss';
+
+.footer {
+  width: 100%;
+  height: $toolbar-height;
+  left: 0;
+  margin: auto;
+  display: flex;
+  align-items: center;
+
+  .footer_right-box {
+    display: flex;
+    margin-left: 0;
+    margin: auto !important;
+    margin-right: 0;
+
+    .footer-button {
+      margin-left: 10px;
+      // margin-right: 10px;
+    }
+  }
+}

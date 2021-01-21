@@ -1,0 +1,37 @@
+@import '../../../theme/colors.scss';
+@import '../../../theme/fonts.scss';
+
+
+.search-field {
+  .box {
+    width: max-content;
+    height: max-content;
+    display: flex;
+    align-items: center;
+
+    .MuiFormLabel-root {
+      color: $warm-color !important;
+      //@include noselect;
+    }
+
+    svg {
+      position: absolute;
+      color: rgba(255, 255, 255, 0.747);
+      width: 25px;
+      height: 25px;
+      bottom: 10px;
+      left: 190px;
+    }
+  }
+
+  .search-btn {
+    position: relative;
+    top: 30px;
+    margin-left: 10px;
+  }
+
+  input {
+    text-transform: lowercase;
+    z-index: 4;
+  }
+}

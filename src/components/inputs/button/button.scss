@@ -1,0 +1,146 @@
+@import '../../../theme/colors.scss';
+@import '../../../theme/fonts.scss';
+
+$time-effect: .5s;
+
+.button {
+  margin: 0 5px;
+
+  .button-holder {
+    text-align: center;
+    display: inline-flex;
+
+    button {
+      outline: none;
+      padding: 8px 10px;
+      height: 33px;
+      display: flex;
+      align-items: center;
+      transition: box-shadow .3s;
+      border-radius: 4px;
+      border-style: none;
+
+      .button-content {
+        width: 100%;
+        display: flex;
+
+        .icon-box {
+          display: flex;
+          align-items: center;
+
+          svg {
+            width: 20px;
+            height: 20px;
+          }
+        }
+
+        .space-box {
+          width: 4px;
+        }
+
+        p {
+          display: flex;
+          align-items: center;
+        }
+      }
+    }
+
+    button:hover {
+      cursor: pointer;
+    }
+
+    .label_button {
+      margin: 0;
+    }
+  }
+
+  .disabled {
+    opacity: 0.2;
+
+    button:hover {
+      cursor: initial;
+    }
+  }
+}
+
+// NORMAL STYLE
+.button.normal {
+  button {
+    background: $s_dark;
+
+    svg {
+      color: rgb(255, 255, 255);
+    }
+
+    p {
+      color: white;
+    }
+  }
+
+  button:hover {
+    background: $p_dark;
+    transition: all ease $time-effect;
+    border-color: $cool-color;
+
+    p {
+      color: $cool-color;
+    }
+
+    svg {
+      color: $cool-color;
+    }
+  }
+}
+
+// TEXT STYLE
+.button.text {
+  button {
+    background: rgba(0, 0, 0, 0);
+
+    svg {
+      color: $warm-color;
+    }
+  }
+
+  button:hover {
+    p {
+      color: $cool-color;
+    }
+
+    svg {
+      color: $cool-color;
+    }
+  }
+}
+
+// OUTLINED STYLE
+.button.outlined {
+  button {
+    border-style: solid;
+    border-width: 1px;
+    border-color: $warm-color;
+    background: rgba(0, 0, 0, 0);
+
+    svg {
+      color: $warm-color;
+    }
+
+    p {
+      color: rgb(165, 165, 165);
+    }
+  }
+
+  button:hover {
+    background: $s_dark;
+    border-color: $cool-color;
+    transition: all ease $time-effect;
+
+    p {
+      color: white;
+    }
+
+    svg {
+      color: white;
+    }
+  }
+}

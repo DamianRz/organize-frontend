@@ -1,0 +1,11 @@
+@import '../../../theme/screen-size.scss';
+
+.stepper {
+    position: relative;
+
+    .stepper-footer {
+        position: relative;
+        margin-top: auto;
+        bottom: 0;
+    }
+}

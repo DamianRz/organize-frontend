@@ -1,0 +1,18 @@
+@import '../../../../../theme/colors.scss';
+
+.manager-actions {
+    margin: 40px;
+
+    .selected-item {
+        display: flex;
+
+        .value {
+            margin-left: 10px;
+        }
+    }
+
+    .buttons-box {
+        display: flex;
+        margin-top: 20px;
+    }
+}

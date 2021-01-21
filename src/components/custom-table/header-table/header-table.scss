@@ -1,0 +1,30 @@
+@import '../../../theme/colors.scss';
+@import '../../../theme/fonts.scss';
+
+
+.header-item-box {
+    cursor: pointer;
+    //@include noselect;
+
+    .header_button-content {
+        .icon {
+            margin-left: 0px;
+        }
+    }
+
+    &.disabled {
+        cursor: none;
+        background-color: red;
+        visibility: hidden;
+    }
+
+    &:hover {
+        .header-item {
+            background-color: rgba(61, 61, 61, 0.301);
+
+            p {
+                color: $warm-color;
+            }
+        }
+    }
+}

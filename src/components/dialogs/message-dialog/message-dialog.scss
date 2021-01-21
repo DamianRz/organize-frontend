@@ -1,0 +1,38 @@
+@import '../../../theme/colors.scss';
+
+.message-dialog {
+    text-align: center;
+
+    .header {
+        .header-title {
+            padding-top: 40px;
+            height: max-content;
+
+            p {
+                margin: 0 20px;
+            }
+        }
+    }
+
+    .dialog-content-0 {
+        margin-top: 20px;
+
+        svg {
+            color: $cool-color;
+            font-size: 40px;
+            margin: 20px 0;
+        }
+
+        button {
+            margin-bottom: 20px;
+        }
+    }
+}
+
+.message-dialog.error {
+    .dialog-content-0 {
+        svg {
+            color: $text_error;
+        }
+    }
+}

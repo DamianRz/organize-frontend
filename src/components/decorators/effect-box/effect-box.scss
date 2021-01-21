@@ -1,0 +1,22 @@
+@import '../../../theme/effects.scss';
+
+$seconds: .5s;
+
+.effect-box {
+    &.show {
+        @include effect-appear($seconds);
+    }
+
+    &.hide {
+        @include effect-hide($seconds);
+    }
+
+    &.slide-left {
+        position: relative;
+        @include effect-slide(left, 100vw, 2s);
+    }
+
+    &.slide-right {
+        @include effect-hide($seconds);
+    }
+}

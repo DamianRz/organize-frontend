@@ -1,0 +1,17 @@
+@import '../theme/colors.scss';
+@import '../theme/screen-size.scss';
+
+.dashboard-page {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow-y: hidden !important;
+
+  .custom-table {
+    top: 30px;
+  }
+
+  .vertical-toolbar {
+    visibility: hidden;
+  }
+}

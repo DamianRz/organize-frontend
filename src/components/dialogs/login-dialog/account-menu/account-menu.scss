@@ -1,0 +1,43 @@
+@import '../../../../theme/colors.scss';
+@import '../../../../theme/effects.scss';
+
+$space: 10px;
+
+.account-menu {
+    position: absolute;
+    right: 0px;
+    top: 60px;
+    width: max-content;
+    min-width: 200px;
+    max-width: 250px;
+    padding: $space 0;
+    z-index: 999;
+    background-color: $shadow-dark;
+    border-style: solid;
+    border-top-style: none;
+    border-width: 1px;
+    border-color: rgba(53, 53, 53, 0.74);
+    // @include effect-appear(.5s);
+
+    .account-info {
+        display: flex;
+        padding: $space;
+
+        svg {
+            width: 30px;
+            height: 30px;
+            color: rgb(87, 87, 87);
+            margin: 0 $space;
+        }
+    }
+
+    .line {
+        border-width: 1px;
+        border-color: rgba(53, 53, 53, 0.74);
+
+    }
+
+    .buttons-box {
+        text-align: center;
+    }
+}
