@@ -16,7 +16,7 @@
   width: 100%;
   height: $toolbar-height;
   // background-color: $shadow-dark;
-  background-color: rgba(114, 96, 48, 0.322);
+  background-color: $box-shadow;
   // visibility: hidden;
 
   .left-box {
@@ -28,8 +28,13 @@
     align-items: center;
 
     .logo-img {
-      width: 100px;
+      width: 160px;
       margin-left: 20px;
+      margin-top: 15px;
+    }
+
+    .logo-text {
+      margin: 0px 0 0 20px;
     }
 
     .toolbar-btn {

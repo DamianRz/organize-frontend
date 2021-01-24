@@ -2,6 +2,12 @@ import { FaGift, FaCartArrowDown } from 'react-icons/fa';
 import { FiUserPlus } from 'react-icons/fi';
 import { GiCoffeeCup, GiBeard, GiPaintedPottery } from 'react-icons/gi';
 
+export const BUSSINESS = {
+    brand: 'Organize',
+    logo: 'https://i.ibb.co/1LmvrxP/organize.png'
+}
+
+
 export const pageInfo = {
     name: 'Art Experience',
     slogan: '',

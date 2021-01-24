@@ -15,6 +15,7 @@ import ClientActions from '../../../actions/Client.actions';
 import { IClient } from '../../../types/Client.type';
 import { FormProvider } from '../../../contexts/FormContext';
 import { AiFillCaretDown } from 'react-icons/ai';
+import { BUSSINESS } from '../../../data';
 
 
 export const LoginDialog = (props: {
@@ -58,7 +59,7 @@ export const LoginDialog = (props: {
         if (response) {
             setUserData({ ...response.data.user, ...response.data.client });
             setShowDialog(false);
-            showSuccessMessage('Has accedido a Art Experience!');
+            showSuccessMessage(`Has accedido a ${BUSSINESS.brand}!`);
         } else {
             showErrorMessage('Ocurrio un error! Verifique usuario y contaseña');
         }
@@ -144,7 +145,7 @@ export const LoginDialog = (props: {
                 onClick={() => launchModal()}
                 style="text"
                 className="activator-btn login-btn"
-                label={!getUserData().username && 'Acceda para Reservar'}
+                label={!getUserData().username && 'Acceder Aqui!'}
                 icon={
                     <>
                         <RiAccountCircleLine />
@@ -165,7 +166,7 @@ export const LoginDialog = (props: {
             {/* STEPPER DIALOG */}
             {showDialog && (
                 <DialogModal
-                    title="Acceso Art Experience"
+                    title={`Acceso a ${BUSSINESS.brand}`}
                     onClose={() => { setShowDialog(false) }}
                     width="350px"
                     height="max-content"

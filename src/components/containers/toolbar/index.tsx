@@ -3,6 +3,8 @@ import { LeftMenu } from '../../dialogs/left-menu';
 import React from 'react';
 import './toolbar.scss';
 import './toolbar-mobile.scss';
+import { BUSSINESS } from '../../../data';
+import { Text } from '../../decorators/text';
 
 export interface IToolbarItem {
   icon?: any,
@@ -23,11 +25,12 @@ export const Toolbar = (props: {
       <div className="left-box">
         {props.showLeftMenu && <LeftMenu />}
         <a href="/">
-          <img
+          {/* <img
             className="logo-img effect-opacity"
-            src="https://i.ibb.co/hfX81DT/art-experience-500.png"
+            src={BUSSINESS.logo}
             alt=""
-          />
+          /> */}
+          <Text className="logo-text" type="subtitle">Organize</Text>
         </a>
         {props.items && props.items.map((button, i) => {
           return (
